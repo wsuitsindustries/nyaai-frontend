@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react"
+import { useState, useRef, useEffect, useId, type KeyboardEvent, type ChangeEvent } from "react"
 import type { Message } from "../services/types"
 
 interface ChatProps {
@@ -68,22 +68,6 @@ function CopyButton({ text }: { text: string }) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
       )}
     </button>
-  )
-}
-
-function EmptyState() {
-  return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4">
-      <div className="mb-4">
-        <NLogo className="h-12 w-12" />
-      </div>
-      <h1 className="text-xl font-semibold text-neutral-900 dark:text-white mb-1 text-center">
-        Welcome to Nya AI
-      </h1>
-      <p className="text-sm text-neutral-500 text-center max-w-md">
-        Your organization's AI knowledge assistant.
-      </p>
-    </div>
   )
 }
 
@@ -254,13 +238,14 @@ const inputSuggestions = [
   "Explain cloud architecture",
 ]
 
-function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSuggestions }: {
+function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSuggestions, centered }: {
   onSend: (text: string) => void
   onAttach: (file: File) => void
   onCancel?: () => void
   disabled: boolean
   enterToSend: boolean
   showSuggestions: boolean
+  centered?: boolean
 }) {
   const [text, setText] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -292,7 +277,7 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
   const canSend = text.trim().length > 0
 
   return (
-    <div className="px-4 pb-24 pt-3 safe-bottom">
+    <div className={`px-4 safe-bottom ${centered ? "pb-0 pt-0" : "pb-24 pt-3"}`}>
       <div className="mx-auto max-w-xl">
         <div className="flex items-end gap-2 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-3 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
           <button
@@ -391,10 +376,44 @@ function Header({ onToggleSidebar, sidebarOpen }: { onToggleSidebar: () => void;
 
 export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, onAttach, onToggleSidebar, sidebarOpen, enterToSend, showSuggestions, userEmail }: ChatProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const [inputText, setInputText] = useState("")
+
+  useEffect(() => {
+    const ta = inputRef.current
+    if (ta) {
+      ta.style.height = "auto"
+      ta.style.height = Math.min(ta.scrollHeight, 150) + "px"
+    }
+  }, [inputText])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, loading])
+
+  const canSend = inputText.trim().length > 0
+
+  function handleSend() {
+    if (!inputText.trim() || loading) return
+    onSend(inputText.trim())
+    setInputText("")
+  }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (loading) return
+    if (enterToSend) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend() }
+    } else {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); handleSend() }
+    }
+  }
+
+  function handleFilePick(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) onAttach(file)
+    e.target.value = ""
+  }
 
   const hasMessages = messages.length > 0
   const lastAssistantId = (() => {
@@ -405,18 +424,25 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
   })()
 
   return (
-    <div className="flex-1 flex flex-col bg-white dark:bg-neutral-950 min-w-0">
+    <div className="flex-1 flex flex-col min-w-0">
       <Header onToggleSidebar={onToggleSidebar} sidebarOpen={sidebarOpen} />
 
       {!hasMessages ? (
-        <div className="flex-1 flex flex-col">
-          <EmptyState />
-          <ChatInput onSend={onSend} onAttach={onAttach} disabled={loading} enterToSend={enterToSend} showSuggestions={showSuggestions} />
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-12 bg-white dark:bg-neutral-950">
+          <div className="flex flex-col items-center gap-6 w-full max-w-xl">
+            <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-500/10 dark:bg-purple-500/15 animate-float">
+              <NLogo className="h-8 w-8" />
+            </div>
+            <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white text-center">
+              What can I help with?
+            </h1>
+            <ChatInput onSend={onSend} onAttach={onAttach} disabled={loading} enterToSend={enterToSend} showSuggestions={showSuggestions} centered />
+          </div>
         </div>
       ) : (
-        <>
-          <div className="flex-1 overflow-y-auto py-4 scroll-smooth">
-            <div className="mx-auto max-w-3xl space-y-4 pb-8">
+        <div className="flex-1 relative bg-white dark:bg-neutral-950">
+          <div className="absolute inset-0 overflow-y-auto py-4 scroll-smooth" style={{ paddingBottom: "180px" }}>
+            <div className="mx-auto max-w-3xl space-y-4">
               {messages.map((msg) =>
                 msg.role === "user" ? (
                   <UserMessage key={msg.id} msg={msg} onEdit={onEdit} userEmail={userEmail} />
@@ -444,8 +470,58 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
               <div ref={bottomRef} />
             </div>
           </div>
-          <ChatInput onSend={onSend} onAttach={onAttach} disabled={loading} enterToSend={enterToSend} showSuggestions={false} />
-        </>
+          <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
+            <div className="mx-auto max-w-xl">
+              <div className="flex items-end gap-2 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-3 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  className="p-2 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all shrink-0"
+                  title="Attach file"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                  </svg>
+                </button>
+                <input ref={fileRef} type="file" accept=".txt,.md,.csv,.json,.pdf" onChange={handleFilePick} className="hidden" />
+                <textarea
+                  ref={inputRef}
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={loading ? "Generating response..." : "Ask about your organization's knowledge..."}
+                  rows={1}
+                  disabled={loading}
+                  className="flex-1 bg-transparent border-none outline-none resize-none text-sm text-neutral-900 dark:text-white placeholder-neutral-500 font-sans py-1.5 max-h-[150px]"
+                />
+                <button
+                  onClick={loading ? onCancel : handleSend}
+                  className={`p-2 rounded-md shrink-0 transition-all ${
+                    loading
+                      ? "bg-neutral-300 dark:bg-neutral-700 text-neutral-500"
+                      : canSend
+                        ? "bg-purple-500 text-white hover:bg-purple-600"
+                        : "bg-neutral-200 dark:bg-neutral-700 text-neutral-400 cursor-not-allowed"
+                  }`}
+                  title={loading ? "Stop generating" : "Send"}
+                >
+                  {loading ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="6" y="6" width="12" height="12" rx="2" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="19" x2="12" y2="5" />
+                      <polyline points="5 12 12 5 19 12" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+              <p className="text-center text-[11px] text-neutral-400 mt-3">
+                Nya AI can make mistakes. Verify important information.
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -5,6 +5,7 @@ import Chat from "./components/Chat"
 import Buckets from "./components/Buckets"
 import Settings from "./components/Settings"
 import Login from "./components/Login"
+import Landing from "./components/Landing"
 import { useChat } from "./hooks/useApi"
 import { setAuthToken } from "./services/api"
 import type { Message } from "./services/types"
@@ -57,6 +58,7 @@ function saveConversation(id: string, title: string, messages: Message[]) {
 
 export default function App() {
   const [user, setUser] = useState<string | null>(null)
+  const [showLogin, setShowLogin] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [activeView, setActiveView] = useState<"chat" | "knowledge">("chat")
@@ -97,6 +99,7 @@ export default function App() {
   const logout = useCallback(() => {
     syncConversation()
     setUser(null)
+    setShowLogin(false)
     setAuthToken(null)
     chat.setMessages([])
     setConversationId(crypto.randomUUID())
@@ -126,7 +129,11 @@ export default function App() {
     <>
       <PageLoader />
       {!user ? (
-        <Login onLogin={(email) => setUser(email)} />
+        !showLogin ? (
+          <Landing onGetStarted={() => setShowLogin(true)} />
+        ) : (
+          <Login onLogin={(email) => setUser(email)} />
+        )
       ) : (
         <div className="h-full flex bg-white dark:bg-neutral-950 overflow-hidden">
           <Sidebar
