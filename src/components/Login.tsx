@@ -43,24 +43,29 @@ export default function Login({ onLogin: onLoginProp }: { onLogin?: (email: stri
 
   return (
     <div className="h-full flex bg-white dark:bg-neutral-950">
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-violet-900 items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.2),transparent_50%)]" />
+      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-gradient-to-br from-neutral-900 to-neutral-950 items-center justify-center">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.12),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 opacity-[0.03]">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="n-watermark" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                <path d="M 22 72 L 22 28 L 78 72 L 78 28" stroke="white" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#n-watermark)" />
+          </svg>
+        </div>
         <div className="relative z-10 text-center px-12">
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-              <NLogo className="h-10 w-10 text-white" />
-            </div>
-          </div>
           <h2 className="text-3xl font-bold text-white mb-3">Welcome to Nya</h2>
-          <p className="text-purple-200 text-base leading-relaxed max-w-sm mx-auto">
+          <p className="text-neutral-400 text-base leading-relaxed max-w-sm mx-auto">
             Your AI-powered knowledge base. Upload documents, ask questions, and get instant answers grounded in your data.
           </p>
           <div className="mt-10 flex justify-center gap-3">
             {["Upload", "Ask", "Get Answers"].map((step, i) => (
               <div key={step} className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-xs font-semibold text-white">{i + 1}</div>
-                <span className="text-xs text-purple-200">{step}</span>
+                <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs font-semibold text-white">{i + 1}</div>
+                <span className="text-xs text-neutral-500">{step}</span>
                 {i < 2 && <div className="w-6 h-px bg-white/10 mx-1" />}
               </div>
             ))}
