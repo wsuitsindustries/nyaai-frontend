@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { login, register, setAuthToken } from "../services/api"
+import { useAuth } from "../context/AuthContext"
 import NLogo from "../components/ui/NLogo"
 
 type Mode = "signin" | "signup"
 
-export default function Login({ onLogin: onLoginProp }: { onLogin?: (email: string) => void }) {
+export default function Login() {
   const navigate = useNavigate()
+  const { login: authLogin } = useAuth()
   const [mode, setMode] = useState<Mode>("signin")
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -29,7 +31,7 @@ export default function Login({ onLogin: onLoginProp }: { onLogin?: (email: stri
         ? await login(email.trim(), password)
         : await register(name.trim(), email.trim(), password)
       setAuthToken(res.access_token)
-      if (onLoginProp) onLoginProp(res.email)
+      authLogin(res.email)
       navigate("/dashboard", { replace: true })
     } catch (err: any) {
       setError(err.message || "Authentication failed")

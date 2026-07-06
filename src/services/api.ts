@@ -46,10 +46,11 @@ export async function register(name: string, email: string, password: string): P
   })
 }
 
-export async function sendChatMessage(message: string, conversationId: string): Promise<ChatResponse> {
+export async function sendChatMessage(message: string, conversationId: string, signal?: AbortSignal): Promise<ChatResponse> {
   return request<ChatResponse>("/chat", {
     method: "POST",
     body: JSON.stringify({ message, conversation_id: conversationId }),
+    signal,
   })
 }
 
@@ -79,8 +80,8 @@ export async function listDocuments(): Promise<DocumentListResponse> {
   return request<DocumentListResponse>("/documents")
 }
 
-export async function deleteDocument(id: string): Promise<void> {
-  await fetch(`${API_BASE}/documents/${id}`, { method: "DELETE", headers: authHeaders() })
+export async function deleteDocument(id: string): Promise<{ ok: boolean }> {
+  return request<{ ok: boolean }>(`/documents/${id}`, { method: "DELETE" })
 }
 
 export async function reindexDocument(id: string): Promise<DocumentStatusResponse> {

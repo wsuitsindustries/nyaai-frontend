@@ -23,6 +23,7 @@ export interface UploadResponse {
   filename: string
   chunks: number
   conversation_id: string
+  document_id: string
   error?: string
 }
 

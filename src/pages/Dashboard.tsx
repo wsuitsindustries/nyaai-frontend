@@ -15,7 +15,7 @@ export default function Dashboard() {
   const { user, logout: authLogout } = useAuth()
   const { theme, setTheme } = useTheme()
 
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [activeView, setActiveView] = useState<"chat" | "knowledge">("chat")
   const [conversationId, setConversationId] = useState<string>(crypto.randomUUID())
@@ -32,10 +32,7 @@ export default function Dashboard() {
 
   const chat = useChat(conversationId)
 
-  useEffect(() => { if (user) setSidebarOpen(true) }, [user])
-
-  const toggleSidebar = useCallback(() => setSidebarOpen((prev) => !prev), [])
-  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const toggleCollapse = useCallback(() => setSidebarCollapsed((prev) => !prev), [])
 
   const syncConversation = useCallback(() => {
     if (chat.messages.length === 0) return
@@ -72,8 +69,8 @@ export default function Dashboard() {
   return (
     <div className="h-full flex bg-white dark:bg-neutral-950 overflow-hidden">
       <Sidebar
-        open={sidebarOpen}
-        onClose={closeSidebar}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={toggleCollapse}
         onNewChat={newChat}
         onUpload={chat.upload}
         onSettings={() => setSettingsOpen(true)}
@@ -85,10 +82,6 @@ export default function Dashboard() {
         activeView={activeView}
       />
 
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-20 bg-black/20 dark:bg-black/40 overlay-fade-in md:hidden" onClick={closeSidebar} />
-      )}
-
       {activeView === "chat" ? (
         <Chat
           messages={chat.messages}
@@ -97,14 +90,13 @@ export default function Dashboard() {
           onEdit={chat.editMessage}
           onRegenerate={chat.regenerate}
           onAttach={chat.upload}
-          onToggleSidebar={toggleSidebar}
-          sidebarOpen={sidebarOpen}
+          onCancel={chat.cancel}
           enterToSend={enterToSend}
           showSuggestions={showSuggestions}
           userEmail={user || ""}
         />
       ) : (
-        <Buckets onUpload={chat.upload} onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+        <Buckets onUpload={chat.upload} />
       )}
 
       <Settings

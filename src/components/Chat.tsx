@@ -9,8 +9,6 @@ interface ChatProps {
   onEdit: (messageId: string, newText: string) => void
   onRegenerate: () => void
   onAttach: (file: File) => void
-  onToggleSidebar: () => void
-  sidebarOpen: boolean
   enterToSend: boolean
   showSuggestions: boolean
   onCancel?: () => void
@@ -345,27 +343,9 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
   )
 }
 
-function Header({ onToggleSidebar, sidebarOpen }: { onToggleSidebar: () => void; sidebarOpen: boolean }) {
-  return (
-    <div className="flex items-center px-4 py-2.5">
-      {!sidebarOpen && (
-        <button
-          onClick={onToggleSidebar}
-          className="p-1.5 rounded-md text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all"
-          title="Open sidebar"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
-      )}
-    </div>
-  )
-}
 
-export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, onAttach, onToggleSidebar, sidebarOpen, enterToSend, showSuggestions, onCancel = () => {}, userEmail }: ChatProps) {
+
+export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, onAttach, enterToSend, showSuggestions, onCancel = () => {}, userEmail }: ChatProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -417,7 +397,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
-      <Header onToggleSidebar={onToggleSidebar} sidebarOpen={sidebarOpen} />
+      <div className="h-4 w-full shrink-0" />
 
       {!hasMessages ? (
         <div className="flex-1 flex flex-col items-center justify-center px-4 pb-12 bg-white dark:bg-neutral-950">

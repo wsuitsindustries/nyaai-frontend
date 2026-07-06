@@ -1,15 +1,20 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { sendChatMessage, uploadFile, searchQuery, healthCheck } from "../services/api"
 import type { Message, Source } from "../types"
 
 export function useChat(conversationId: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
+  const abortRef = useRef<AbortController | null>(null)
 
   const appendAssistantResponse = useCallback(async (text: string) => {
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
+
     setLoading(true)
     try {
-      const data = await sendChatMessage(text, conversationId)
+      const data = await sendChatMessage(text, conversationId, controller.signal)
       const sources: Source[] = (data.sources || []).map((s: any) =>
         typeof s === "string" ? { title: s } : s
       )
@@ -22,18 +27,24 @@ export function useChat(conversationId: string) {
           sources,
         },
       ])
-    } catch {
+    } catch (err: any) {
+      const aborted = err?.name === "AbortError"
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: "Sorry, I couldn't reach the backend. Make sure the server is running.",
+          content: aborted ? "Generation cancelled." : "Sorry, I couldn't reach the backend. Make sure the server is running.",
         },
       ])
     }
     setLoading(false)
+    abortRef.current = null
   }, [conversationId])
+
+  const cancel = useCallback(() => {
+    abortRef.current?.abort()
+  }, [])
 
   const sendMessage = useCallback(async (text: string) => {
     const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text }
@@ -62,33 +73,20 @@ export function useChat(conversationId: string) {
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
-      content: `Uploading **${file.name}** for indexing...`,
+      content: `**${file.name}** — Uploading...`,
     }
     setMessages((prev) => [...prev, userMsg])
     setLoading(true)
 
-    const statusSteps = [
-      { status: "uploading", delay: 600, label: "Uploading..." },
-      { status: "extracting", delay: 800, label: "Extracting text..." },
-      { status: "chunking", delay: 700, label: "Creating chunks..." },
-      { status: "embedding", delay: 900, label: "Generating embeddings..." },
-    ]
-
-    let stepMsgId: string | null = null
-
-    for (const step of statusSteps) {
-      await new Promise((r) => setTimeout(r, step.delay))
-      stepMsgId = crypto.randomUUID()
-      const mid = stepMsgId!
-      setMessages((prev) => [
-        ...prev.filter((m) => m.id !== mid),
-        {
-          id: mid,
-          role: "assistant",
-          content: `**${file.name}** — ${step.label}`,
-        } as Message,
-      ])
-    }
+    const stepMsgId = crypto.randomUUID()
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: stepMsgId,
+        role: "assistant",
+        content: `**${file.name}** — Uploading...`,
+      } as Message,
+    ])
 
     try {
       const data = await uploadFile(file, conversationId)
@@ -97,7 +95,7 @@ export function useChat(conversationId: string) {
         role: "assistant",
         content: data.error
           ? `Upload failed: ${data.error}`
-          : `**${file.name}** indexed successfully (${data.chunks} chunks). You can now ask questions about it.`,
+          : `**${file.name}** indexed successfully (${data.chunks} chunks)`,
       }
       setMessages((prev) => [...prev.filter((m) => m.id !== stepMsgId), finalMsg])
     } catch {
@@ -113,7 +111,7 @@ export function useChat(conversationId: string) {
     setLoading(false)
   }, [conversationId])
 
-  return { messages, setMessages, loading, sendMessage, editMessage, regenerate, upload }
+  return { messages, setMessages, loading, sendMessage, editMessage, regenerate, upload, cancel }
 }
 
 export function useBackendHealth() {
