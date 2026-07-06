@@ -365,7 +365,7 @@ function Header({ onToggleSidebar, sidebarOpen }: { onToggleSidebar: () => void;
   )
 }
 
-export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, onAttach, onToggleSidebar, sidebarOpen, enterToSend, showSuggestions, userEmail }: ChatProps) {
+export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, onAttach, onToggleSidebar, sidebarOpen, enterToSend, showSuggestions, onCancel = () => {}, userEmail }: ChatProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)

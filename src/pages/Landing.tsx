@@ -112,7 +112,7 @@ export default function Landing() {
                 <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={keydown} placeholder="Message Nya..." rows={2} className="w-full resize-none bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 outline-none" />
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-xs text-neutral-400 dark:text-neutral-500">{userCount} of {MAX_DEMO_MSGS} messages</span>
-                  <button onClick={send} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                  <button onClick={() => send()} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="22" y1="2" x2="11" y2="13" />
                       <polyline points="22 2 15 22 11 13 2 9 22 2" />
@@ -173,7 +173,7 @@ export default function Landing() {
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 </button>
-                <button onClick={send} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                <button onClick={() => send()} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />
                     <polyline points="22 2 15 22 11 13 2 9 22 2" />
