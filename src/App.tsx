@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import ErrorBoundary from "./components/ErrorBoundary"
 import PageLoader from "./components/PageLoader"
 import Sidebar from "./components/Sidebar"
 import Chat from "./components/Chat"
@@ -6,6 +8,9 @@ import Buckets from "./components/Buckets"
 import Settings from "./components/Settings"
 import Login from "./components/Login"
 import Landing from "./components/Landing"
+import Privacy from "./pages/Privacy"
+import Terms from "./pages/Terms"
+import Contact from "./pages/Contact"
 import { useChat } from "./hooks/useApi"
 import { setAuthToken } from "./services/api"
 import type { Message } from "./services/types"
@@ -56,9 +61,12 @@ function saveConversation(id: string, title: string, messages: Message[]) {
   localStorage.setItem(`nya-msg-${id}`, JSON.stringify(messages))
 }
 
-export default function App() {
-  const [user, setUser] = useState<string | null>(null)
-  const [showLogin, setShowLogin] = useState(false)
+function Dashboard() {
+  const [user, setUser] = useState<string | null>(() => {
+    const token = localStorage.getItem("nya-token")
+    const email = localStorage.getItem("nya-email")
+    return token && email ? email : null
+  })
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [activeView, setActiveView] = useState<"chat" | "knowledge">("chat")
@@ -77,17 +85,9 @@ export default function App() {
     if (user) setSidebarOpen(true)
   }, [user])
 
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen((prev) => !prev)
-  }, [])
-
-  const closeSidebar = useCallback(() => {
-    setSidebarOpen(false)
-  }, [])
-
-  const openSidebar = useCallback(() => {
-    setSidebarOpen(true)
-  }, [])
+  const toggleSidebar = useCallback(() => setSidebarOpen((prev) => !prev), [])
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const openSidebar = useCallback(() => setSidebarOpen(true), [])
 
   const syncConversation = useCallback(() => {
     if (chat.messages.length === 0) return
@@ -99,8 +99,8 @@ export default function App() {
   const logout = useCallback(() => {
     syncConversation()
     setUser(null)
-    setShowLogin(false)
     setAuthToken(null)
+    localStorage.removeItem("nya-email")
     chat.setMessages([])
     setConversationId(crypto.randomUUID())
     setActiveView("chat")
@@ -121,72 +121,85 @@ export default function App() {
     setActiveView("chat")
   }, [chat, syncConversation])
 
-  const navigateKnowledge = useCallback(() => {
-    setActiveView("knowledge")
+  const navigateKnowledge = useCallback(() => setActiveView("knowledge"), [])
+
+  const handleLogin = useCallback((email: string) => {
+    setUser(email)
+    localStorage.setItem("nya-email", email)
   }, [])
 
+  if (!user) {
+    return <Landing />
+  }
+
   return (
-    <>
-      <PageLoader />
-      {!user ? (
-        !showLogin ? (
-          <Landing onGetStarted={() => setShowLogin(true)} />
-        ) : (
-          <Login onLogin={(email) => setUser(email)} />
-        )
-      ) : (
-        <div className="h-full flex bg-white dark:bg-neutral-950 overflow-hidden">
-          <Sidebar
-            open={sidebarOpen}
-            onClose={closeSidebar}
-            onNewChat={newChat}
-            onUpload={chat.upload}
-            onSettings={() => setSettingsOpen(true)}
-            onNavigateKnowledge={navigateKnowledge}
-            onSelectConversation={selectConversation}
-            conversations={conversations}
-            userEmail={user}
-            onLogout={logout}
-            activeView={activeView}
-          />
+    <div className="h-full flex bg-white dark:bg-neutral-950 overflow-hidden">
+      <Sidebar
+        open={sidebarOpen}
+        onClose={closeSidebar}
+        onNewChat={newChat}
+        onUpload={chat.upload}
+        onSettings={() => setSettingsOpen(true)}
+        onNavigateKnowledge={navigateKnowledge}
+        onSelectConversation={selectConversation}
+        conversations={conversations}
+        userEmail={user}
+        onLogout={logout}
+        activeView={activeView}
+      />
 
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 z-20 bg-black/20 dark:bg-black/40 overlay-fade-in md:hidden"
-              onClick={closeSidebar}
-            />
-          )}
-
-          {activeView === "chat" ? (
-            <Chat
-              messages={chat.messages}
-              loading={chat.loading}
-              onSend={chat.sendMessage}
-              onEdit={chat.editMessage}
-              onRegenerate={chat.regenerate}
-              onAttach={chat.upload}
-              onToggleSidebar={toggleSidebar}
-              sidebarOpen={sidebarOpen}
-              enterToSend={enterToSend}
-              showSuggestions={showSuggestions}
-              userEmail={user}
-            />
-          ) : (
-            <Buckets onUpload={chat.upload} onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-          )}
-
-          <Settings
-            open={settingsOpen}
-            onClose={() => setSettingsOpen(false)}
-            theme={theme}
-            onThemeChange={setTheme}
-            enterToSend={enterToSend}
-            onEnterToSendChange={setEnterToSend}
-            showSuggestions={showSuggestions}
-            onShowSuggestionsChange={setShowSuggestions}
-          />
-        </div>
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/20 dark:bg-black/40 overlay-fade-in md:hidden"
+          onClick={closeSidebar}
+        />
       )}
-    </>
+
+      {activeView === "chat" ? (
+        <Chat
+          messages={chat.messages}
+          loading={chat.loading}
+          onSend={chat.sendMessage}
+          onEdit={chat.editMessage}
+          onRegenerate={chat.regenerate}
+          onAttach={chat.upload}
+          onToggleSidebar={toggleSidebar}
+          sidebarOpen={sidebarOpen}
+          enterToSend={enterToSend}
+          showSuggestions={showSuggestions}
+          userEmail={user}
+        />
+      ) : (
+        <Buckets onUpload={chat.upload} onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+      )}
+
+      <Settings
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        theme={theme}
+        onThemeChange={setTheme}
+        enterToSend={enterToSend}
+        onEnterToSendChange={setEnterToSend}
+        showSuggestions={showSuggestions}
+        onShowSuggestionsChange={setShowSuggestions}
+      />
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/privacy" element={<ErrorBoundary><Privacy /></ErrorBoundary>} />
+        <Route path="/terms" element={<ErrorBoundary><Terms /></ErrorBoundary>} />
+        <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
+        <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
+        <Route path="/*" element={<ErrorBoundary>
+          <PageLoader />
+          <Dashboard />
+        </ErrorBoundary>} />
+      </Routes>
+    </BrowserRouter>
   )
 }

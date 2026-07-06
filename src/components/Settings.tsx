@@ -81,7 +81,7 @@ export default function Settings({ open, onClose, theme, onThemeChange, enterToS
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 overlay-fade-in" onClick={onClose}>
       <div
         ref={dialogRef}
-        className="w-full sm:max-w-lg bg-white dark:bg-neutral-900 rounded-t-2xl sm:rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-2xl animate-scale-in sm:mx-4 max-h-[90vh] overflow-y-auto"
+        className="w-full sm:max-w-lg bg-white dark:bg-neutral-900 rounded-t-2xl sm:rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-2xl animate-scale-in sm:mx-4 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto my-0 sm:my-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
