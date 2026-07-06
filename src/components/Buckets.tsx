@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import type { Document, DocumentStatus } from "../services/types"
+import type { Document, DocumentStatus } from "../types"
 import { listDocuments, deleteDocument, reindexDocument } from "../services/api"
 
 interface BucketsProps {

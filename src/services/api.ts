@@ -1,4 +1,4 @@
-import type { ChatResponse, UploadResponse, SearchResponse, DocumentListResponse, DocumentStatusResponse } from "./types"
+import type { ChatResponse, UploadResponse, SearchResponse, DocumentListResponse, DocumentStatusResponse } from "../types"
 
 const API_BASE = import.meta.env.VITE_API_URL || "/api"
 

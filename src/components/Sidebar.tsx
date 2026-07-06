@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import NLogo from "./NLogo"
+import NLogo from "./ui/NLogo"
 
 interface StoredConversation {
   id: string

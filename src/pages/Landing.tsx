@@ -1,6 +1,6 @@
 import { useState, type KeyboardEvent, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
-import NLogo from "./NLogo"
+import NLogo from "../components/ui/NLogo"
 
 const MAX_DEMO_MSGS = 3
 const DEMO_RESPONSES = [
@@ -18,7 +18,6 @@ export default function Landing() {
   const [demoActive, setDemoActive] = useState(false)
   const [showLimitModal, setShowLimitModal] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages])
 
@@ -67,9 +66,10 @@ export default function Landing() {
             <NLogo className="h-5 w-5" />
             <span className="text-sm font-semibold text-neutral-900 dark:text-white">Nya AI Demo</span>
           </div>
-          <Link to="/login" className="text-xs font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors px-3 py-1.5 rounded-lg">
-            Get Started
-          </Link>
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-0.5 rounded-full">Sample data</span>
+            <Link to="/login" className="text-xs font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors px-3 py-1.5 rounded-lg">Get Started</Link>
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-4 py-6">
@@ -83,13 +83,7 @@ export default function Landing() {
             )}
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-purple-500 text-white"
-                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200"
-                }`}>
-                  {msg.text}
-                </div>
+                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${msg.role === "user" ? "bg-purple-500 text-white" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200"}`}>{msg.text}</div>
               </div>
             ))}
             {loading && (
@@ -111,28 +105,14 @@ export default function Landing() {
           <div className="max-w-2xl mx-auto">
             {limitReached ? (
               <div className="text-center py-3">
-                <Link to="/login" className="text-sm font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors px-5 py-2 rounded-xl inline-block">
-                  Sign up to continue
-                </Link>
+                <Link to="/login" className="text-sm font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors px-5 py-2 rounded-xl inline-block">Sign up to continue</Link>
               </div>
             ) : (
               <div className="border border-neutral-300 dark:border-neutral-700 rounded-2xl bg-white dark:bg-neutral-900 p-3 transition-shadow focus-within:shadow-md focus-within:border-purple-400 dark:focus-within:border-purple-500">
-                <textarea
-                  ref={inputRef}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={keydown}
-                  placeholder="Message Nya..."
-                  rows={2}
-                  className="w-full resize-none bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 outline-none"
-                />
+                <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={keydown} placeholder="Message Nya..." rows={2} className="w-full resize-none bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 outline-none" />
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-xs text-neutral-400 dark:text-neutral-500">{userCount} of {MAX_DEMO_MSGS} messages</span>
-                  <button
-                    onClick={send}
-                    disabled={!input.trim() || loading}
-                    className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                  >
+                  <button onClick={send} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="22" y1="2" x2="11" y2="13" />
                       <polyline points="22 2 15 22 11 13 2 9 22 2" />
@@ -147,17 +127,11 @@ export default function Landing() {
         {showLimitModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" onClick={() => setShowLimitModal(false)}>
             <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl max-w-sm w-full p-8 text-center" onClick={(e) => e.stopPropagation()}>
-              <div className="flex justify-center mb-4">
-                <NLogo className="h-10 w-10" />
-              </div>
+              <div className="flex justify-center mb-4"><NLogo className="h-10 w-10" /></div>
               <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">You've reached the demo limit</h2>
               <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Sign up to continue using Nya AI with unlimited messages.</p>
-              <Link to="/login" className="block w-full text-sm font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors py-2.5 rounded-xl mb-3 text-center">
-                Sign up free
-              </Link>
-              <Link to="/login" className="block w-full text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2 text-center">
-                Already have an account? Sign in
-              </Link>
+              <Link to="/login" className="block w-full text-sm font-medium text-white bg-purple-500 hover:bg-purple-600 transition-colors py-2.5 rounded-xl mb-3 text-center">Sign up free</Link>
+              <Link to="/login" className="block w-full text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors py-2 text-center">Already have an account? Sign in</Link>
             </div>
           </div>
         )}
@@ -186,20 +160,11 @@ export default function Landing() {
       <section className="px-6 pt-20 pb-16 sm:pt-28 sm:pb-20">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-xs font-medium text-neutral-400 dark:text-neutral-500 mb-4">Nya AI</p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 dark:text-white mb-8">
-            What can I help with?
-          </h1>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 dark:text-white mb-8">What can I help with?</h1>
 
           <div className="relative mb-6">
             <div className="border border-neutral-300 dark:border-neutral-700 rounded-2xl shadow-sm bg-white dark:bg-neutral-900 p-3 transition-shadow focus-within:shadow-md focus-within:border-purple-400 dark:focus-within:border-purple-500">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={keydown}
-                placeholder="Message Nya..."
-                rows={2}
-                className="w-full resize-none bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 outline-none"
-              />
+              <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={keydown} placeholder="Message Nya..." rows={2} className="w-full resize-none bg-transparent text-sm text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 outline-none" />
               <div className="flex items-center justify-between mt-2">
                 <button className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -208,11 +173,7 @@ export default function Landing() {
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 </button>
-                <button
-                  onClick={send}
-                  disabled={!input.trim() || loading}
-                  className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
+                <button onClick={send} disabled={!input.trim() || loading} className="p-1.5 rounded-lg bg-purple-500 text-white hover:bg-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />
                     <polyline points="22 2 15 22 11 13 2 9 22 2" />

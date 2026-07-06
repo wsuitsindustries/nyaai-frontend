@@ -50,3 +50,9 @@ export interface DocumentStatusResponse {
   id: string
   status: DocumentStatus
 }
+
+export interface StoredConversation {
+  id: string
+  title: string
+  timestamp: number
+}

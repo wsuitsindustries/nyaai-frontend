@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type KeyboardEvent, type ChangeEvent } from "react"
-import type { Message } from "../services/types"
-import NLogo from "./NLogo"
+import type { Message } from "../types"
+import NLogo from "./ui/NLogo"
 
 interface ChatProps {
   messages: Message[]
@@ -158,18 +158,23 @@ function SourcesSection({ sources }: { sources: NonNullable<Message["sources"]> 
         </svg>
       </button>
       {expanded && (
-        <div className="mt-1.5 space-y-1">
+        <div className="mt-1.5 space-y-2">
           {sources.map((s, i) => (
-            <div key={i} className="flex items-start gap-1.5 text-xs text-neutral-400">
-              <span className="shrink-0 w-3.5 h-3.5 rounded bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center text-[9px] text-neutral-500 mt-0.5">
-                {i + 1}
-              </span>
-              <div>
-                <span className="text-neutral-600 dark:text-neutral-300">{s.title}</span>
-                {(s.page || s.section) && (
-                  <span className="text-neutral-400"> — {s.page && `p.${s.page}`}{s.page && s.section && " · "}{s.section}</span>
-                )}
+            <div key={i} className="text-xs">
+              <div className="flex items-start gap-1.5">
+                <span className="shrink-0 w-3.5 h-3.5 rounded bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-[9px] text-purple-600 dark:text-purple-400 mt-0.5">
+                  {i + 1}
+                </span>
+                <div>
+                  <span className="text-neutral-600 dark:text-neutral-300 font-medium">{s.title}</span>
+                  {(s.page || s.section) && (
+                    <span className="text-neutral-400"> — {s.page && `p.${s.page}`}{s.page && s.section && " · "}{s.section}</span>
+                  )}
+                </div>
               </div>
+              {s.snippet && (
+                <p className="mt-1 ml-5 text-neutral-400 dark:text-neutral-500 leading-relaxed line-clamp-2">{s.snippet}</p>
+              )}
             </div>
           ))}
         </div>
@@ -382,6 +387,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
 
   function handleSend() {
     if (!inputText.trim() || loading) return
+    if (inputText.trim().length > 10000) return
     onSend(inputText.trim())
     setInputText("")
   }

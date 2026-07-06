@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react"
 import { sendChatMessage, uploadFile, searchQuery, healthCheck } from "../services/api"
-import type { Message, Source } from "../services/types"
+import type { Message, Source } from "../types"
 
 export function useChat(conversationId: string) {
   const [messages, setMessages] = useState<Message[]>([])

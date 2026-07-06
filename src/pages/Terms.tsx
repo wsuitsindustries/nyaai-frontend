@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import NLogo from "../components/NLogo"
+import NLogo from "../components/ui/NLogo"
 
 export default function Terms() {
   return (
