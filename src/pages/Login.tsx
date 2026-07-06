@@ -30,7 +30,7 @@ export default function Login({ onLogin: onLoginProp }: { onLogin?: (email: stri
         : await register(name.trim(), email.trim(), password)
       setAuthToken(res.access_token)
       if (onLoginProp) onLoginProp(res.email)
-      navigate("/", { replace: true })
+      navigate("/dashboard", { replace: true })
     } catch (err: any) {
       setError(err.message || "Authentication failed")
     }

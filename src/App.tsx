@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { ThemeProvider } from "./context/ThemeContext"
 import { AuthProvider } from "./context/AuthContext"
 import ErrorBoundary from "./components/ui/ErrorBoundary"
@@ -16,11 +16,13 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
+            <Route path="/dashboard" element={<ErrorBoundary><PageLoader /><Dashboard /></ErrorBoundary>} />
             <Route path="/privacy" element={<ErrorBoundary><Privacy /></ErrorBoundary>} />
             <Route path="/terms" element={<ErrorBoundary><Terms /></ErrorBoundary>} />
             <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
-            <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
-            <Route path="/*" element={<ErrorBoundary><PageLoader /><Dashboard /></ErrorBoundary>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>
       </ThemeProvider>

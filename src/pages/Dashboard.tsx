@@ -27,7 +27,7 @@ export default function Dashboard() {
   useEffect(() => { localStorage.setItem("nya-suggestions", String(showSuggestions)) }, [showSuggestions])
 
   useEffect(() => {
-    if (!user) navigate("/", { replace: true })
+    if (!user) navigate("/login", { replace: true })
   }, [user, navigate])
 
   const chat = useChat(conversationId)
