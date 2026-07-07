@@ -99,16 +99,16 @@ export default function Login() {
 
   return (
     <div className="h-full flex bg-white dark:bg-neutral-950">
-      <div className="hidden lg:flex w-[480px] xl:w-[520px] bg-neutral-900 flex-col items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.08),transparent_60%)]" />
+      <div className="hidden lg:flex w-[480px] xl:w-[520px] bg-purple-600 flex-col items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 16 64 L 16 18 L 64 64 L 64 18' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.06' /%3E%3C/svg%3E")`, backgroundSize: '120px 120px' }} />
         <div className="relative z-10 text-center px-12">
           <div className="flex justify-center mb-6">
-            <div className="p-3 rounded-xl bg-white/5 backdrop-blur-sm">
+            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
               <NLogo className="h-10 w-10" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">Nya AI</h2>
-          <p className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto">
+          <p className="text-purple-100 text-sm leading-relaxed max-w-xs mx-auto">
             Your AI-powered knowledge base. Upload documents, ask questions, and get instant answers grounded in your data.
           </p>
           <div className="mt-10 space-y-3 text-left max-w-xs mx-auto">
@@ -118,8 +118,8 @@ export default function Login() {
               { step: "3", text: "Get source-cited answers" },
             ].map((item) => (
               <div key={item.step} className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center text-xs font-semibold text-purple-400">{item.step}</span>
-                <span className="text-sm text-neutral-300">{item.text}</span>
+                <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white">{item.step}</span>
+                <span className="text-sm text-purple-50">{item.text}</span>
               </div>
             ))}
           </div>
