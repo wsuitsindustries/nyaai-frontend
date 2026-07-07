@@ -178,14 +178,15 @@ export default function Landing() {
           </div>
 
           <div className="relative">
-            <div className="space-y-8">
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-800 -translate-x-1/2" />
+            <div className="space-y-12 lg:space-y-0 relative">
               {[
                 { side: "left", step: "01", icon: <UploadIcon />, title: "Upload documents", desc: "Drag and drop PDFs, Markdown, CSV, or Word files. We support all common formats.", detail: "Files are automatically parsed and prepared for indexing." },
                 { side: "right", step: "02", icon: <BrainIcon />, title: "Automatic indexing", desc: "Your documents are parsed, chunked, and indexed for fast retrieval. No manual setup needed.", detail: "Each document is broken into searchable chunks with vector embeddings." },
                 { side: "left", step: "03", icon: <MessageIcon />, title: "Ask anything", desc: "Ask questions in natural language and get answers with direct source citations.", detail: "Answers include the exact document, page, and section for verification." },
               ].map((item) => (
-                <div key={item.step} className="flex justify-center">
-                  <div className="max-w-lg w-full">
+                <div key={item.step} className={`lg:flex items-center ${item.side === "right" ? "lg:flex-row-reverse" : ""} gap-8 lg:gap-16`}>
+                  <div className={`lg:w-1/2 ${item.side === "right" ? "lg:ml-auto" : ""} ${item.side === "left" ? "lg:mr-auto" : ""}`}>
                     <div className="relative p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
                       <span className="absolute right-3 top-3 text-4xl sm:text-5xl font-bold text-purple-100 dark:text-purple-500/[0.07] select-none leading-none">
                         {item.step}
@@ -204,6 +205,9 @@ export default function Landing() {
                         {item.detail}
                       </p>
                     </div>
+                  </div>
+                  <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-purple-600 ring-4 ring-purple-100 dark:ring-purple-500/20 relative z-10" />
                   </div>
                 </div>
               ))}
