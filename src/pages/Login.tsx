@@ -57,6 +57,41 @@ function EyeIcon({ on }: { on: boolean }) {
   )
 }
 
+function UploadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  )
+}
+
+function BrainIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+    </svg>
+  )
+}
+
+function MessageIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
+function SearchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="6" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  )
+}
+
 function passwordStrength(pw: string): { label: string; color: string; width: string } {
   if (!pw) return { label: "", color: "", width: "0%" }
   if (pw.length < 6) return { label: "Weak", color: "bg-red-400", width: "25%" }
@@ -101,25 +136,28 @@ export default function Login() {
     <div className="h-full flex bg-white dark:bg-neutral-950">
       <div className="hidden lg:flex w-[480px] xl:w-[520px] bg-purple-600 flex-col items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 16 64 L 16 18 L 64 64 L 64 18' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.06' /%3E%3C/svg%3E")`, backgroundSize: '120px 120px' }} />
-        <div className="relative z-10 text-center px-12">
+        <div className="relative z-10 text-center px-14">
           <div className="flex justify-center mb-6">
-            <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
-              <NLogo className="h-10 w-10" />
+            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
+              <NLogo className="h-12 w-12" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Nya AI</h2>
-          <p className="text-purple-100 text-sm leading-relaxed max-w-xs mx-auto">
-            Your AI-powered knowledge base. Upload documents, ask questions, and get instant answers grounded in your data.
+          <h2 className="text-3xl font-bold text-white mb-3">AI knowledge base<br />for your team</h2>
+          <p className="text-purple-100/80 text-sm leading-relaxed max-w-sm mx-auto">
+            Stop digging through documents. Upload once, ask anything, and get source-cited answers in seconds.
           </p>
-          <div className="mt-10 space-y-3 text-left max-w-xs mx-auto">
+          <div className="mt-12 space-y-4 text-left max-w-xs mx-auto">
             {[
-              { step: "1", text: "Upload your documents" },
-              { step: "2", text: "Ask questions naturally" },
-              { step: "3", text: "Get source-cited answers" },
-            ].map((item) => (
-              <div key={item.step} className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-semibold text-white">{item.step}</span>
-                <span className="text-sm text-purple-50">{item.text}</span>
+              { icon: <UploadIcon />, text: "Upload PDFs, Markdown, CSV, Word files" },
+              { icon: <BrainIcon />, text: "Automatic indexing with vector search" },
+              { icon: <MessageIcon />, text: "Ask questions in plain English" },
+              { icon: <SearchIcon />, text: "Every answer cites its source" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
+                  {item.icon}
+                </div>
+                <span className="text-sm text-purple-50/90">{item.text}</span>
               </div>
             ))}
           </div>
@@ -136,13 +174,14 @@ export default function Login() {
             Back to home
           </Link>
 
-          <div className="flex justify-center mb-6 lg:hidden">
-            <Link to="/"><NLogo className="h-10 w-10" /></Link>
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <Link to="/" className="block">
+              <NLogo className="h-7 w-7 shrink-0" />
+            </Link>
+            <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">
+              {isSignIn ? "Welcome back" : "Create your account"}
+            </h1>
           </div>
-
-          <h1 className="text-xl font-semibold text-neutral-900 dark:text-white text-center mb-1">
-            {isSignIn ? "Welcome back" : "Create your account"}
-          </h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center mb-8">
             {isSignIn ? "Sign in to Nya AI" : "Get started with Nya AI"}
           </p>
