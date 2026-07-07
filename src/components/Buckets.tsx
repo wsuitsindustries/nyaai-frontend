@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import type { Document, DocumentStatus } from "../types"
-import { listDocuments, deleteDocument } from "../services/api"
+import { listDocuments, deleteDocument, getDocumentStatus } from "../services/api"
 
 interface BucketsProps {
   onUpload: (file: File) => void
@@ -17,15 +17,25 @@ function StatusPill({ status }: { status: DocumentStatus }) {
   }
   const labels: Record<DocumentStatus, string> = {
     uploading: "Uploading",
-    extracting: "Processing",
-    chunking: "Processing",
-    embedding: "Processing",
+    extracting: "Extracting",
+    chunking: "Chunking",
+    embedding: "Embedding",
     ready: "Ready",
     failed: "Failed",
   }
   return (
     <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium ${colors[status]}`}>
-      {labels[status]}
+      {status === "extracting" || status === "chunking" || status === "embedding" || status === "uploading" ? (
+        <span className="flex items-center gap-1">
+          <svg className="animate-spin w-3 h-3" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          {labels[status]}
+        </span>
+      ) : (
+        labels[status]
+      )}
     </span>
   )
 }
@@ -46,6 +56,34 @@ export default function Buckets({ onUpload }: BucketsProps) {
   }
 
   useEffect(() => { loadDocs() }, [])
+
+  useEffect(() => {
+    const pending = documents.filter((d) =>
+      d.status === "uploading" || d.status === "extracting" || d.status === "chunking" || d.status === "embedding"
+    )
+    if (pending.length === 0) return
+
+    const interval = setInterval(async () => {
+      let updated = false
+      const next = await Promise.all(
+        documents.map(async (doc) => {
+          if (doc.status === "uploading" || doc.status === "extracting" || doc.status === "chunking" || doc.status === "embedding") {
+            try {
+              const statusRes = await getDocumentStatus(doc.id)
+              if (statusRes.status !== doc.status) {
+                updated = true
+                return { ...doc, status: statusRes.status }
+              }
+            } catch { /* ignore */ }
+          }
+          return doc
+        })
+      )
+      if (updated) setDocuments(next)
+    }, 2000)
+
+    return () => clearInterval(interval)
+  }, [documents])
 
   async function handleDelete(id: string) {
     try {
@@ -68,6 +106,12 @@ export default function Buckets({ onUpload }: BucketsProps) {
     setDocuments((prev) => [doc, ...prev])
     onUpload(file)
     e.target.value = ""
+  }
+
+  function formatSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   }
 
   return (
@@ -109,7 +153,7 @@ export default function Buckets({ onUpload }: BucketsProps) {
             />
           </div>
         ) : (
-          <div className="mx-auto max-w-2xl py-6 px-4 space-y-2">
+          <div className="mx-auto max-w-5xl py-6 px-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-medium text-neutral-900 dark:text-white">Documents</h2>
               <button
@@ -126,34 +170,43 @@ export default function Buckets({ onUpload }: BucketsProps) {
                 className="hidden"
               />
             </div>
-            {documents.map((doc) => (
-              <div
-                key={doc.id}
-                className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 py-2 px-3"
-              >
-                <div className="flex items-center gap-3">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-neutral-400">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                  </svg>
-                  <p className="text-sm text-neutral-900 dark:text-white truncate flex-1 min-w-0">{doc.filename}</p>
-                  <StatusPill status={doc.status} />
-                  <button
-                    onClick={() => handleDelete(doc.id)}
-                    className="p-1 rounded text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all shrink-0"
-                    title="Delete"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    </svg>
-                  </button>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+              {documents.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="aspect-square rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 p-3 flex flex-col hover:border-purple-300 dark:hover:border-purple-700 transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600 dark:text-purple-400">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                    </div>
+                    <button
+                      onClick={() => handleDelete(doc.id)}
+                      className="p-1 rounded text-neutral-300 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+                      title="Delete"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center min-w-0">
+                    <p className="text-xs font-medium text-neutral-900 dark:text-white truncate leading-tight">{doc.filename}</p>
+                    <p className="text-[10px] text-neutral-400 mt-0.5">{formatSize(doc.size)}</p>
+                  </div>
+                  <div className="mt-auto pt-2">
+                    <StatusPill status={doc.status} />
+                  </div>
+                  {doc.error && (
+                    <p className="mt-1 text-[10px] text-red-500 truncate">{doc.error}</p>
+                  )}
                 </div>
-                {doc.error && (
-                  <p className="mt-1 text-xs text-red-500">{doc.error}</p>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>

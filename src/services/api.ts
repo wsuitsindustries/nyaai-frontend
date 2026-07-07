@@ -54,6 +54,54 @@ export async function sendChatMessage(message: string, conversationId: string, s
   })
 }
 
+export async function streamChatMessage(
+  message: string,
+  conversationId: string,
+  onToken: (token: string) => void,
+  onDone: (sources: any[]) => void,
+  onError: (err: string) => void,
+  signal?: AbortSignal,
+): Promise<void> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" }
+  if (authToken) headers["Authorization"] = `Bearer ${authToken}`
+  const res = await fetch(`${API_BASE}/chat/stream`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ message, conversation_id: conversationId }),
+    signal,
+  })
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(body || `Stream error: ${res.status}`)
+  }
+  const reader = res.body!.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ""
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split("\n")
+    buffer = lines.pop() || ""
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.slice(6).trim()
+        if (data === "[DONE]") continue
+        try {
+          const parsed = JSON.parse(data)
+          if (parsed.token) {
+            onToken(parsed.token)
+          }
+          if (parsed.done) {
+            onDone(parsed.sources || [])
+          }
+        } catch { /* skip malformed */ }
+      }
+    }
+  }
+}
+
 export async function uploadFile(file: File, conversationId: string): Promise<UploadResponse> {
   const form = new FormData()
   form.append("file", file)

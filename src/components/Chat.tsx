@@ -402,9 +402,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
       {!hasMessages ? (
         <div className="flex-1 flex flex-col items-center justify-center px-4 pb-12 bg-white dark:bg-neutral-950">
           <div className="flex flex-col items-center gap-6 w-full max-w-xl">
-            <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-500/10 dark:bg-purple-500/15 animate-float">
-              <NLogo className="h-8 w-8" />
-            </div>
+
             <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white text-center">
               What can I help with?
             </h1>
@@ -428,7 +426,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                   />
                 )
               )}
-              {loading && (
+              {loading && messages.length === 0 && (
                 <div className="flex gap-2 px-4 py-1 animate-fade-up">
                   <NLogo className="h-5 w-5" />
                   <div className="flex items-center gap-1.5 py-1">

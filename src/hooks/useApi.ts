@@ -1,45 +1,67 @@
 import { useState, useCallback, useRef } from "react"
-import { sendChatMessage, uploadFile, searchQuery, healthCheck } from "../services/api"
+import { sendChatMessage, uploadFile, streamChatMessage, searchQuery, healthCheck } from "../services/api"
 import type { Message, Source } from "../types"
 
 export function useChat(conversationId: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const abortRef = useRef<AbortController | null>(null)
+  const assistantIdRef = useRef<string | null>(null)
 
   const appendAssistantResponse = useCallback(async (text: string) => {
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
 
+    assistantIdRef.current = crypto.randomUUID()
+    const msgId = assistantIdRef.current
+    setMessages((prev) => [
+      ...prev,
+      { id: msgId, role: "assistant", content: "" },
+    ])
+
     setLoading(true)
     try {
-      const data = await sendChatMessage(text, conversationId, controller.signal)
-      const sources: Source[] = (data.sources || []).map((s: any) =>
-        typeof s === "string" ? { title: s } : s
+      await streamChatMessage(
+        text,
+        conversationId,
+        (token) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msgId ? { ...m, content: m.content + token } : m
+            )
+          )
+        },
+        (sources) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msgId ? { ...m, sources: sources as Source[] } : m
+            )
+          )
+        },
+        () => {},
+        controller.signal,
       )
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: data.answer || data.response || "No response.",
-          sources,
-        },
-      ])
     } catch (err: any) {
-      const aborted = err?.name === "AbortError"
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: aborted ? "Generation cancelled." : "Sorry, I couldn't reach the backend. Make sure the server is running.",
-        },
-      ])
+      if (err?.name === "AbortError") {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === msgId ? { ...m, content: "Generation cancelled." } : m
+          )
+        )
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === msgId
+              ? { ...m, content: "Sorry, I couldn't reach the backend. Make sure the server is running." }
+              : m
+          )
+        )
+      }
     }
     setLoading(false)
     abortRef.current = null
+    assistantIdRef.current = null
   }, [conversationId])
 
   const cancel = useCallback(() => {

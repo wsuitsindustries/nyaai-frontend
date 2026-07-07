@@ -69,7 +69,7 @@ export default function Sidebar({
 
         <button
           onClick={onNewChat}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-700 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all`}
+          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-700 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all`}
           title="New chat"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
@@ -129,7 +129,7 @@ export default function Sidebar({
       <div className="p-2 space-y-1">
         <button
           onClick={onNavigateKnowledge}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base transition-all ${
+          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base rounded-lg transition-all ${
             activeView === "knowledge"
               ? "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10"
               : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -146,7 +146,7 @@ export default function Sidebar({
         </button>
         <button
           onClick={onSettings}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all`}
+          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all`}
           title="Settings"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
@@ -157,7 +157,7 @@ export default function Sidebar({
         </button>
         <button
           onClick={onLogout}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all`}
+          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-4"} py-4 text-base text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all`}
           title={userEmail}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
