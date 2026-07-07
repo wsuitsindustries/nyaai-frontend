@@ -178,17 +178,19 @@ export default function Landing() {
           </div>
 
           <div className="relative">
-            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-800 -translate-x-1/2" />
-            <div className="space-y-12 lg:space-y-0 relative">
+            <div className="space-y-8">
               {[
                 { side: "left", step: "01", icon: <UploadIcon />, title: "Upload documents", desc: "Drag and drop PDFs, Markdown, CSV, or Word files. We support all common formats.", detail: "Files are automatically parsed and prepared for indexing." },
                 { side: "right", step: "02", icon: <BrainIcon />, title: "Automatic indexing", desc: "Your documents are parsed, chunked, and indexed for fast retrieval. No manual setup needed.", detail: "Each document is broken into searchable chunks with vector embeddings." },
                 { side: "left", step: "03", icon: <MessageIcon />, title: "Ask anything", desc: "Ask questions in natural language and get answers with direct source citations.", detail: "Answers include the exact document, page, and section for verification." },
               ].map((item) => (
-                <div key={item.step} className={`lg:flex items-center ${item.side === "right" ? "lg:flex-row-reverse" : ""} gap-8 lg:gap-16`}>
-                  <div className="lg:w-1/2">
-                    <div className={`p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 ${item.side === "right" ? "lg:ml-auto" : ""} max-w-lg`}>
-                      <div className="flex items-center gap-4 mb-4">
+                <div key={item.step} className="flex justify-center">
+                  <div className="max-w-lg w-full">
+                    <div className="relative p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+                      <span className="absolute right-3 top-3 text-4xl sm:text-5xl font-bold text-purple-100 dark:text-purple-500/[0.07] select-none leading-none">
+                        {item.step}
+                      </span>
+                      <div className="flex items-center gap-4 mb-4 relative">
                         <div className="w-10 h-10 rounded-lg bg-purple-600 flex items-center justify-center text-white shrink-0">
                           {item.icon}
                         </div>
@@ -196,16 +198,11 @@ export default function Landing() {
                           <h3 className="text-base font-semibold text-neutral-900 dark:text-white">{item.title}</h3>
                         </div>
                       </div>
-                      <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">{item.desc}</p>
-                      <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-3 flex items-center gap-1.5">
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed relative">{item.desc}</p>
+                      <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-3 flex items-center gap-1.5 relative">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-purple-500"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
                         {item.detail}
                       </p>
-                    </div>
-                  </div>
-                  <div className="flex lg:w-1/2 items-center justify-center lg:justify-center mt-4 lg:mt-0">
-                    <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs lg:text-sm font-bold relative z-10">
-                      {item.step}
                     </div>
                   </div>
                 </div>
@@ -333,29 +330,32 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 lg:px-10 py-16 bg-purple-600">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to get started?</h2>
-          <p className="text-base text-purple-100 mb-10 max-w-md mx-auto leading-relaxed">
-            Sign up free and start building your knowledge base in minutes. No credit card required.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-purple-600 bg-white hover:bg-purple-50 transition-colors rounded-lg"
-            >
-              Create your free account
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-white border border-purple-400 hover:bg-purple-700 transition-colors rounded-lg"
-            >
-              Learn more
-            </a>
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 lg:px-10 py-16 bg-purple-600 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 16 64 L 16 18 L 64 64 L 64 18' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.06' /%3E%3C/svg%3E")`, backgroundSize: '120px 120px' }} />
+        <div className="max-w-xl mx-auto w-full relative">
+          <div className="bg-white dark:bg-neutral-950 rounded-2xl border border-purple-500/20 p-10 sm:p-14 text-center shadow-xl">
+            <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-4">Ready to get started?</h2>
+            <p className="text-base text-neutral-500 dark:text-neutral-400 mb-10 max-w-md mx-auto leading-relaxed">
+              Sign up free and start building your knowledge base in minutes. No credit card required.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors rounded-lg"
+              >
+                Create your free account
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+              <a
+                href="#features"
+                className="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors rounded-lg"
+              >
+                Learn more
+              </a>
+            </div>
           </div>
         </div>
       </section>
