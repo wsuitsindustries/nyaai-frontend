@@ -136,112 +136,87 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="hidden lg:block">
-            <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-lg bg-white dark:bg-neutral-950 flex" style={{ height: '420px' }}>
-              <div className="w-14 flex flex-col bg-neutral-50 dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800 shrink-0">
-                <div className="flex flex-col items-center pt-3 pb-1 space-y-0.5">
-                  <div className="p-1.5">
-                    <NLogo className="h-6 w-6" />
+          <div className="hidden lg:flex justify-center">
+            <div className="relative">
+              <div className="absolute -inset-1 rounded-[44px] bg-neutral-200 dark:bg-neutral-800" />
+              <div className="absolute inset-0 rounded-[40px] bg-neutral-300 dark:bg-neutral-700" />
+              <div className="relative rounded-[36px] overflow-hidden bg-white dark:bg-neutral-950 shadow-xl flex flex-col" style={{ width: '290px', height: '580px' }}>
+                <div className="h-7 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-between px-7 text-[10px] text-neutral-500 shrink-0">
+                  <span className="font-semibold">9:41</span>
+                  <div className="flex items-center gap-1">
+                    <svg width="14" height="10" viewBox="0 0 24 12" fill="currentColor"><rect x="1" y="1" width="20" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none" /><rect x="4" y="4" width="6" height="4" rx="0.5" fill="currentColor" /></svg>
+                    <svg width="14" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 15l4-4 4 4 4-4 4 4 4-4" /></svg>
                   </div>
                 </div>
-                <div className="flex-1 flex flex-col items-center pt-2 space-y-0.5 px-1.5">
-                  <div className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all cursor-default">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center pb-2 space-y-0.5 px-1.5">
-                  <div className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all cursor-default">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                      <line x1="8" y1="7" x2="16" y2="7" />
-                      <line x1="8" y1="11" x2="14" y2="11" />
-                    </svg>
-                  </div>
-                  <div className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all cursor-default">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="3" />
-                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                  </div>
-                  <div className="w-9 h-9 flex items-center justify-center rounded-lg text-neutral-400 hover:text-red-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all cursor-default">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-neutral-950">
-                <div className="flex-1 overflow-hidden">
-                  <div className="h-full overflow-y-auto p-4 space-y-5">
-                    <div className="flex justify-end px-4 animate-fade-up">
-                      <div className="max-w-[75%] w-fit">
-                        <div className="flex items-center gap-2 mb-1 justify-end">
-                          <div className="w-7 h-7 rounded-md bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center">
-                            <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">U</span>
+                <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-neutral-950">
+                  <div className="flex-1 overflow-hidden">
+                    <div className="h-full overflow-y-auto px-3 pt-3 pb-2 space-y-4">
+                      <div className="flex justify-end animate-fade-up">
+                        <div className="max-w-[85%] w-fit">
+                          <div className="flex items-center gap-2 mb-1 justify-end">
+                            <div className="w-6 h-6 rounded-md bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center">
+                              <span className="text-[10px] font-semibold text-purple-700 dark:text-purple-300">U</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="bg-purple-50 dark:bg-purple-500/10 rounded-xl rounded-tr-sm px-4 py-2.5 border border-purple-100 dark:border-purple-500/20">
-                          <p className="text-sm text-neutral-900 dark:text-white leading-relaxed">What's our remote work policy?</p>
-                        </div>
-                      </div>
-                    </div>
-                    {showTyping && (
-                      <div className="px-4 animate-fade-in">
-                        <div className="flex items-center gap-2">
-                          <NLogo className="h-5 w-5" />
-                          <div className="flex items-center gap-1 py-1">
-                            <span className="text-xs text-neutral-400">Searching company knowledge</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 typing-dot" />
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 typing-dot" />
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 typing-dot" />
+                          <div className="bg-purple-50 dark:bg-purple-500/10 rounded-xl rounded-tr-sm px-3.5 py-2 border border-purple-100 dark:border-purple-500/20">
+                            <p className="text-xs text-neutral-900 dark:text-white leading-relaxed">What's our remote work policy?</p>
                           </div>
                         </div>
                       </div>
-                    )}
-                    {showAnswer && (
-                      <div className="px-4 animate-fade-up">
-                        <div className="max-w-[75%]">
-                          <div className="mb-1.5">
-                            <NLogo className="h-7 w-7" />
+                      {showTyping && (
+                        <div className="animate-fade-in">
+                          <div className="flex items-center gap-2">
+                            <NLogo className="h-4 w-4" />
+                            <div className="flex items-center gap-1 py-1">
+                              <span className="text-[10px] text-neutral-400">Searching company knowledge</span>
+                              <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                              <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                              <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                            </div>
                           </div>
-                          <p className="text-sm text-neutral-800 dark:text-neutral-200 leading-relaxed">
-                            Based on your company handbook, remote work is allowed on Tuesdays and Thursdays. Core hours are 10am–3pm EST.
-                          </p>
-                          <div className="mt-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-                            <p className="text-xs text-neutral-400 flex items-center gap-1.5">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                              </svg>
-                              1 source
+                        </div>
+                      )}
+                      {showAnswer && (
+                        <div className="animate-fade-up">
+                          <div className="max-w-[85%]">
+                            <div className="mb-1">
+                              <NLogo className="h-5 w-5" />
+                            </div>
+                            <p className="text-xs text-neutral-800 dark:text-neutral-200 leading-relaxed">
+                              Based on your company handbook, remote work is allowed on Tuesdays and Thursdays. Core hours are 10am–3pm EST.
                             </p>
+                            <div className="mt-2 pt-1.5 border-t border-neutral-200 dark:border-neutral-800">
+                              <p className="text-[10px] text-neutral-400 flex items-center gap-1">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                  <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                                1 source
+                              </p>
+                            </div>
                           </div>
                         </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="px-3 pb-3 pt-1.5">
+                    <div className="flex items-end gap-1.5 border border-neutral-300 dark:border-neutral-700 rounded-xl px-3 py-2 bg-white dark:bg-neutral-900">
+                      <div className="p-1 rounded text-neutral-400">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                        </svg>
                       </div>
-                    )}
-                  </div>
-                </div>
-                <div className="px-4 pb-3 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-                  <div className="flex items-end gap-2 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-2.5 bg-white dark:bg-neutral-900 transition-all shadow-sm">
-                    <div className="p-1 rounded-md text-neutral-400">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 text-sm text-neutral-400">Ask about your organization's knowledge...</div>
-                    <div className="p-1.5 rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-400">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="19" x2="12" y2="5" />
-                        <polyline points="5 12 12 5 19 12" />
-                      </svg>
+                      <div className="flex-1 text-xs text-neutral-400">Ask about your organization's knowledge...</div>
+                      <div className="p-1 rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-400">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="12" y1="19" x2="12" y2="5" />
+                          <polyline points="5 12 12 5 19 12" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div className="h-1 rounded-full bg-neutral-300 dark:bg-neutral-700 mx-auto mb-1.5" style={{ width: '120px' }} />
               </div>
             </div>
           </div>
