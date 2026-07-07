@@ -193,7 +193,6 @@ export default function Landing() {
                           {item.icon}
                         </div>
                         <div>
-                          <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-widest">{item.step}</span>
                           <h3 className="text-base font-semibold text-neutral-900 dark:text-white">{item.title}</h3>
                         </div>
                       </div>
@@ -204,8 +203,8 @@ export default function Landing() {
                       </p>
                     </div>
                   </div>
-                  <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold relative z-10">
+                  <div className="flex lg:w-1/2 items-center justify-center lg:justify-center mt-4 lg:mt-0">
+                    <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs lg:text-sm font-bold relative z-10">
                       {item.step}
                     </div>
                   </div>
