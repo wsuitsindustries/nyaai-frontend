@@ -140,7 +140,7 @@ export default function Landing() {
             <div className="relative" style={{ transform: 'rotateY(-14deg) rotateX(3deg)', transformStyle: 'preserve-3d' }}>
               <div className="absolute -inset-1 rounded-[44px] bg-neutral-200 dark:bg-neutral-800" />
               <div className="absolute inset-0 rounded-[40px] bg-neutral-300 dark:bg-neutral-700" />
-              <div className="relative rounded-[36px] overflow-hidden bg-white dark:bg-neutral-950 flex flex-col shadow-2xl" style={{ width: '290px', height: '580px', boxShadow: '-4px 8px 40px rgba(0,0,0,0.12), 8px 12px 60px rgba(0,0,0,0.08)' }}>
+              <div className="relative rounded-[36px] overflow-hidden bg-white dark:bg-neutral-950 flex flex-col shadow-2xl" style={{ width: '290px', height: '500px', boxShadow: '-4px 8px 40px rgba(0,0,0,0.12), 8px 12px 60px rgba(0,0,0,0.08)' }}>
                 <div className="h-7 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-between px-7 text-[10px] text-neutral-500 shrink-0">
                   <span className="font-semibold">9:41</span>
                   <div className="flex items-center gap-1">
