@@ -26,7 +26,11 @@ html {
   height: 100dvh;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+html.dark { color-scheme: dark; }
+html:not(.dark) { color-scheme: light; }
 
 body, #root {
   height: 100dvh;

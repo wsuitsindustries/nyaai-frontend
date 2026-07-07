@@ -83,17 +83,17 @@ export default function Settings({ open, onClose, theme, onThemeChange, enterToS
             </svg>
           </button>
         </div>
-        <div className="px-5 sm:px-6 py-5 space-y-6">
+        <div className="px-4 sm:px-5 py-4 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">Theme</label>
-            <div className="grid grid-cols-3 gap-2">
+            <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-2">Theme</label>
+            <div className="grid grid-cols-3 gap-1.5">
               {themeOptions.map((opt) => {
                 const isActive = theme === opt.value
                 return (
                   <button
                     key={opt.value}
                     onClick={() => onThemeChange(opt.value)}
-                    className={`flex flex-col items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                    className={`flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-medium transition-all ${
                       isActive
                         ? "bg-purple-500 text-white"
                         : "text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -109,7 +109,7 @@ export default function Settings({ open, onClose, theme, onThemeChange, enterToS
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Send messages with Enter</p>
+              <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Enter to send</p>
               <p className="text-xs text-neutral-500 mt-0.5">Shift + Enter for new line</p>
             </div>
             <Toggle checked={enterToSend} onChange={onEnterToSendChange} />
@@ -117,8 +117,8 @@ export default function Settings({ open, onClose, theme, onThemeChange, enterToS
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Show suggestions on new chat</p>
-              <p className="text-xs text-neutral-500 mt-0.5">Display prompt suggestions</p>
+              <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Suggestions</p>
+              <p className="text-xs text-neutral-500 mt-0.5">Show prompts on new chat</p>
             </div>
             <Toggle checked={showSuggestions} onChange={onShowSuggestionsChange} />
           </div>

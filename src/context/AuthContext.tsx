@@ -25,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
     setAuthToken(null)
     localStorage.removeItem("nya-email")
+    localStorage.removeItem("nya-token")
   }, [])
 
   return <AuthContext value={{ user, login, logout }}>{children}</AuthContext>

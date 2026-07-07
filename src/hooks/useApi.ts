@@ -15,9 +15,10 @@ export function useChat(conversationId: string) {
 
     assistantIdRef.current = crypto.randomUUID()
     const msgId = assistantIdRef.current
+    const ts = Date.now()
     setMessages((prev) => [
       ...prev,
-      { id: msgId, role: "assistant", content: "" },
+      { id: msgId, role: "assistant", content: "", timestamp: ts },
     ])
 
     setLoading(true)
@@ -69,7 +70,8 @@ export function useChat(conversationId: string) {
   }, [])
 
   const sendMessage = useCallback(async (text: string) => {
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text }
+    const ts = Date.now()
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text, timestamp: ts }
     setMessages((prev) => [...prev, userMsg])
     await appendAssistantResponse(text)
   }, [appendAssistantResponse])
@@ -92,10 +94,12 @@ export function useChat(conversationId: string) {
   }, [messages, appendAssistantResponse])
 
   const upload = useCallback(async (file: File) => {
+    const ts = Date.now()
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
       content: `**${file.name}** — Uploading...`,
+      timestamp: ts,
     }
     setMessages((prev) => [...prev, userMsg])
     setLoading(true)
@@ -107,6 +111,7 @@ export function useChat(conversationId: string) {
         id: stepMsgId,
         role: "assistant",
         content: `**${file.name}** — Uploading...`,
+        timestamp: ts + 1,
       } as Message,
     ])
 

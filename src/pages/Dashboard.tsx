@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
@@ -7,8 +7,9 @@ import Sidebar from "../components/Sidebar"
 import Chat from "../components/Chat"
 import Buckets from "../components/Buckets"
 import Settings from "../components/Settings"
+import SearchMessages from "../components/SearchMessages"
 import type { StoredConversation, Message } from "../types"
-import { loadConversations, loadMessages, saveConversation } from "../utils/storage"
+import { loadConversations, loadMessages, saveConversation, deleteConversation, renameConversation } from "../utils/storage"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -17,6 +18,7 @@ export default function Dashboard() {
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [activeView, setActiveView] = useState<"chat" | "knowledge">("chat")
   const [conversationId, setConversationId] = useState<string>(crypto.randomUUID())
   const [conversations, setConversations] = useState<StoredConversation[]>(() => loadConversations())
@@ -66,6 +68,48 @@ export default function Dashboard() {
 
   const navigateKnowledge = useCallback(() => setActiveView("knowledge"), [])
 
+  const deleteConv = useCallback((id: string) => {
+    deleteConversation(id)
+    if (id === conversationId) {
+      setConversationId(crypto.randomUUID())
+      chat.setMessages([])
+    }
+    setConversations(loadConversations())
+  }, [conversationId, chat])
+
+  const renameConv = useCallback((id: string, title: string) => {
+    renameConversation(id, title)
+    setConversations(loadConversations())
+  }, [])
+
+  const selectSearchResult = useCallback((convId: string) => {
+    syncConversation()
+    const msgs = loadMessages(convId)
+    if (msgs) chat.setMessages(msgs)
+    setConversationId(convId)
+    setActiveView("chat")
+  }, [chat, syncConversation])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        if (searchOpen) { setSearchOpen(false); return }
+        if (settingsOpen) { setSettingsOpen(false); return }
+        return
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setSearchOpen((prev) => !prev)
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "n") {
+        e.preventDefault()
+        newChat()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [settingsOpen, searchOpen, newChat])
+
   return (
     <div className="h-full flex bg-white dark:bg-neutral-950 overflow-hidden">
       <Sidebar
@@ -76,7 +120,10 @@ export default function Dashboard() {
         onSettings={() => setSettingsOpen(true)}
         onNavigateKnowledge={navigateKnowledge}
         onSelectConversation={selectConversation}
+        onDeleteConversation={deleteConv}
+        onRenameConversation={renameConv}
         conversations={conversations}
+        conversationsLoading={false}
         userEmail={user || ""}
         onLogout={logout}
         activeView={activeView}
@@ -108,6 +155,12 @@ export default function Dashboard() {
         onEnterToSendChange={setEnterToSend}
         showSuggestions={showSuggestions}
         onShowSuggestionsChange={setShowSuggestions}
+      />
+
+      <SearchMessages
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onSelectMessage={selectSearchResult}
       />
     </div>
   )
