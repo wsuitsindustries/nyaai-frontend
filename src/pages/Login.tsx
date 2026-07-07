@@ -142,8 +142,8 @@ export default function Login() {
               <NLogo className="h-12 w-12" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-3">AI knowledge base<br />for your team</h2>
-          <p className="text-purple-100/80 text-sm leading-relaxed max-w-sm mx-auto">
+          <h2 className="text-3xl font-bold text-neutral-900 mb-3">AI knowledge base<br />for your team</h2>
+          <p className="text-neutral-700 text-sm leading-relaxed max-w-sm mx-auto">
             Stop digging through documents. Upload once, ask anything, and get source-cited answers in seconds.
           </p>
           <div className="mt-12 space-y-4 text-left max-w-xs mx-auto">
@@ -154,10 +154,10 @@ export default function Login() {
               { icon: <SearchIcon />, text: "Every answer cites its source" },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-black/10 flex items-center justify-center text-neutral-800 shrink-0">
                   {item.icon}
                 </div>
-                <span className="text-sm text-purple-50/90">{item.text}</span>
+                <span className="text-sm text-neutral-700">{item.text}</span>
               </div>
             ))}
           </div>
