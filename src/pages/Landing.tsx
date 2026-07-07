@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 import NLogo from "../components/ui/NLogo"
 
@@ -215,32 +216,69 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="features" className="min-h-screen flex flex-col items-center justify-center px-6 lg:px-10 py-16">
-        <div className="max-w-5xl mx-auto w-full">
+      <section id="features" className="min-h-screen flex flex-col items-center justify-center px-6 lg:px-10 py-16 relative">
+        <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-3 uppercase tracking-wider">Features</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-4">Built for teams that need answers fast</h2>
             <p className="text-base text-neutral-500 dark:text-neutral-400 max-w-lg mx-auto">Everything you need to manage company knowledge in one place.</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
+          {(() => {
+            const items = [
               { icon: <MessageIcon />, title: "Natural conversations", desc: "Ask questions the same way you'd ask a colleague. No special syntax or commands needed." },
               { icon: <DocIcon />, title: "Smart knowledge base", desc: "Upload PDFs, Markdown, CSV, and more. Automatically indexed and ready to query in seconds." },
               { icon: <SearchIcon />, title: "Source-grounded answers", desc: "Every response cites the exact documents used so you can verify the original source." },
               { icon: <ShieldIcon />, title: "Enterprise security", desc: "Your data is encrypted at rest and in transit. We never share or sell your information." },
               { icon: <BrainIcon />, title: "RAG-powered accuracy", desc: "Retrieval-augmented generation ensures every answer is factual and grounded in your data." },
               { icon: <SparkleIcon />, title: "Continuous learning", desc: "Add documents anytime. Your knowledge base grows and improves with your organization." },
-            ].map((f) => (
-              <div key={f.title} className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                <div className="w-11 h-11 rounded-lg bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4">
-                  {f.icon}
+            ]
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const [idx, setIdx] = useState(0)
+            const prev = useCallback(() => setIdx((i) => (i - 1 + items.length) % items.length), [items.length])
+            const next = useCallback(() => setIdx((i) => (i + 1) % items.length), [items.length])
+            const f = items[idx]
+            return (
+              <div className="w-full max-w-3xl mx-auto">
+                <div className="relative">
+                  <div className="overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+                    <div className="p-10 sm:p-14 lg:p-16 flex flex-col items-center text-center">
+                      <div className="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
+                        {f.icon}
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mb-4">{f.title}</h3>
+                      <p className="text-base sm:text-lg text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-lg">{f.desc}</p>
+                      <div className="mt-8 flex items-center gap-2">
+                        {items.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setIdx(i)}
+                            className={`h-2 rounded-full transition-all duration-300 ${i === idx ? "w-8 bg-purple-500" : "w-2 bg-neutral-300 dark:bg-neutral-700 hover:bg-neutral-400 dark:hover:bg-neutral-600"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={prev}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-6 w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-300 dark:hover:border-neutral-700 transition-all shadow-sm"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={next}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-6 w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-center text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-300 dark:hover:border-neutral-700 transition-all shadow-sm"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
                 </div>
-                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-2">{f.title}</h3>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">{f.desc}</p>
               </div>
-            ))}
-          </div>
+            )
+          })()}
         </div>
       </section>
 
