@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, type KeyboardEvent, type ChangeEvent } from "react"
+import { LuArrowUp, LuSquare } from "react-icons/lu"
 import type { Message } from "../types"
 import NLogo from "./ui/NLogo"
 
@@ -318,14 +319,14 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
 
   return (
     <div className={`px-4 safe-bottom ${centered ? "pb-0 pt-0" : "pb-20 pt-2"}`}>
-      <div className="mx-auto max-w-xl">
-        <div className="flex items-end gap-1.5 border border-neutral-300 dark:border-neutral-700 rounded-xl px-3.5 py-2.5 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
+      <div className="mx-auto max-w-2xl">
+        <div className="flex items-end gap-1.5 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-3 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all shrink-0"
+            className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all shrink-0"
             title="Attach file"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
             </svg>
           </button>
@@ -348,11 +349,11 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
             placeholder="Ask about your organization's knowledge..."
             rows={1}
             disabled={disabled}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-sm text-neutral-900 dark:text-white placeholder-neutral-500 font-sans py-1.5 max-h-[150px]"
+            className="flex-1 bg-transparent border-none outline-none resize-none text-sm text-neutral-900 dark:text-white placeholder-neutral-500 font-sans py-2 max-h-[150px]"
           />
           <button
             onClick={disabled ? onCancel : handleSubmit}
-            className={`p-2 rounded-md shrink-0 transition-all ${
+            className={`p-1.5 rounded-lg shrink-0 transition-all flex items-center justify-center ${
               disabled
                 ? "bg-neutral-300 dark:bg-neutral-700 text-neutral-500"
                 : canSend
@@ -362,15 +363,10 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
             title={disabled ? "Stop generating" : "Send"}
           >
             {disabled ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="6" y="6" width="12" height="12" rx="2" />
-              </svg>
-            ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="19" x2="12" y2="5" />
-                <polyline points="5 12 12 5 19 12" />
-              </svg>
-            )}
+                <LuSquare size={18} />
+              ) : (
+                <LuArrowUp size={20} />
+              )}
           </button>
         </div>
         {showSuggestions && (
@@ -386,9 +382,6 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
             ))}
           </div>
         )}
-        <p className="text-center text-[10px] text-neutral-400 mt-2">
-          NyaAI can make mistakes.
-        </p>
       </div>
     </div>
   )
@@ -517,7 +510,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                   </div>
                 </div>
               )}
-              {loading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
+              {loading && messages.length > 0 && (messages[messages.length - 1].role === "user" || (messages[messages.length - 1].role === "assistant" && !messages[messages.length - 1].content)) && (
                 <div className="px-4 py-1 animate-fade-up">
                   <div className="max-w-3xl">
                     <div className="mb-1">
@@ -535,15 +528,15 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
               <div ref={bottomRef} />
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 px-4 pb-3">
-            <div className="mx-auto max-w-xl">
-              <div className="flex items-end gap-1.5 border border-neutral-300 dark:border-neutral-700 rounded-xl px-3.5 py-2.5 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
+          <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
+            <div className="mx-auto max-w-2xl">
+              <div className="flex items-end gap-1.5 border border-neutral-300 dark:border-neutral-700 rounded-xl px-4 py-3 bg-white dark:bg-neutral-900 transition-all focus-within:border-purple-500 shadow-sm">
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all shrink-0"
+                  className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all shrink-0 self-end mb-0.5"
                   title="Attach file"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                   </svg>
                 </button>
@@ -560,7 +553,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                 />
                 <button
                   onClick={loading ? onCancel : handleSend}
-                  className={`p-1.5 rounded-md shrink-0 transition-all ${
+                  className={`p-1.5 rounded-lg shrink-0 transition-all flex items-center justify-center ${
                     loading
                       ? "bg-neutral-300 dark:bg-neutral-700 text-neutral-500"
                       : canSend
@@ -570,22 +563,17 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                   title={loading ? "Stop" : "Send"}
                 >
                   {loading ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <rect x="6" y="6" width="12" height="12" rx="2" />
-                    </svg>
-                  ) : (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="12" y1="19" x2="12" y2="5" />
-                      <polyline points="5 12 12 5 19 12" />
-                    </svg>
-                  )}
+                      <LuSquare size={18} />
+                    ) : (
+                      <LuArrowUp size={20} />
+                    )}
                 </button>
               </div>
-              <p className="text-center text-[10px] text-neutral-400 mt-2">
-                NyaAI can make mistakes.
-              </p>
             </div>
           </div>
+          <p className="text-center text-[10px] text-neutral-400 pb-1">
+            NyaAI can make mistakes.
+          </p>
         </div>
       )}
     </div>

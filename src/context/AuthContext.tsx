@@ -3,7 +3,8 @@ import { setAuthToken } from "../services/api"
 
 interface AuthContextValue {
   user: string | null
-  login: (email: string) => void
+  userName: string | null
+  login: (email: string, name?: string) => void
   logout: () => void
 }
 
@@ -15,20 +16,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const email = localStorage.getItem("nya-email")
     return token && email ? email : null
   })
+  const [userName, setUserName] = useState<string | null>(() => {
+    return localStorage.getItem("nya-username") || null
+  })
 
-  const login = useCallback((email: string) => {
+  const login = useCallback((email: string, name?: string) => {
     setUser(email)
+    setUserName(name || null)
     localStorage.setItem("nya-email", email)
+    if (name) localStorage.setItem("nya-username", name)
   }, [])
 
   const logout = useCallback(() => {
     setUser(null)
+    setUserName(null)
     setAuthToken(null)
     localStorage.removeItem("nya-email")
+    localStorage.removeItem("nya-username")
     localStorage.removeItem("nya-token")
   }, [])
 
-  return <AuthContext value={{ user, login, logout }}>{children}</AuthContext>
+  return <AuthContext value={{ user, userName, login, logout }}>{children}</AuthContext>
 }
 
 export function useAuth() {

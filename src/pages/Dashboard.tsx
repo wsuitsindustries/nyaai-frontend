@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
@@ -8,12 +8,12 @@ import Chat from "../components/Chat"
 import Buckets from "../components/Buckets"
 import Settings from "../components/Settings"
 import SearchMessages from "../components/SearchMessages"
-import type { StoredConversation, Message } from "../types"
+import type { StoredConversation } from "../types"
 import { loadConversations, loadMessages, saveConversation, deleteConversation, renameConversation } from "../utils/storage"
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { user, logout: authLogout } = useAuth()
+  const { user, userName, logout: authLogout } = useAuth()
   const { theme, setTheme } = useTheme()
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -24,6 +24,17 @@ export default function Dashboard() {
   const [conversations, setConversations] = useState<StoredConversation[]>(() => loadConversations())
   const [enterToSend, setEnterToSend] = useState(() => localStorage.getItem("nya-enter-send") !== "false")
   const [showSuggestions, setShowSuggestions] = useState(() => localStorage.getItem("nya-suggestions") !== "false")
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 1024) {
+        setSidebarCollapsed(true)
+      }
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => { localStorage.setItem("nya-enter-send", String(enterToSend)) }, [enterToSend])
   useEffect(() => { localStorage.setItem("nya-suggestions", String(showSuggestions)) }, [showSuggestions])
@@ -125,26 +136,29 @@ export default function Dashboard() {
         conversations={conversations}
         conversationsLoading={false}
         userEmail={user || ""}
+        userName={userName || undefined}
         onLogout={logout}
         activeView={activeView}
       />
 
-      {activeView === "chat" ? (
-        <Chat
-          messages={chat.messages}
-          loading={chat.loading}
-          onSend={chat.sendMessage}
-          onEdit={chat.editMessage}
-          onRegenerate={chat.regenerate}
-          onAttach={chat.upload}
-          onCancel={chat.cancel}
-          enterToSend={enterToSend}
-          showSuggestions={showSuggestions}
-          userEmail={user || ""}
-        />
-      ) : (
-        <Buckets onUpload={chat.upload} />
-      )}
+      <div className="flex-1 flex flex-col min-w-0">
+        {activeView === "chat" ? (
+          <Chat
+            messages={chat.messages}
+            loading={chat.loading}
+            onSend={chat.sendMessage}
+            onEdit={chat.editMessage}
+            onRegenerate={chat.regenerate}
+            onAttach={chat.upload}
+            onCancel={chat.cancel}
+            enterToSend={enterToSend}
+            showSuggestions={showSuggestions}
+            userEmail={user || ""}
+          />
+        ) : (
+          <Buckets onUpload={chat.upload} />
+        )}
+      </div>
 
       <Settings
         open={settingsOpen}
@@ -155,6 +169,8 @@ export default function Dashboard() {
         onEnterToSendChange={setEnterToSend}
         showSuggestions={showSuggestions}
         onShowSuggestionsChange={setShowSuggestions}
+        userEmail={user || ""}
+        userName={userName || ""}
       />
 
       <SearchMessages

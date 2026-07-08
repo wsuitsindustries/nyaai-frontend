@@ -19,13 +19,13 @@ export default function BrandLogo({ className = "h-7" }: { className?: string })
         fill="none"
       />
       <text
-        x="48"
-        y="42.5"
+        x="46"
+        y="44"
         fill={`url(#${gradientId})`}
         fontFamily="'Inter', system-ui, -apple-system, sans-serif"
         fontWeight="800"
-        fontSize="32"
-        letterSpacing="0.5"
+        fontSize="38"
+        letterSpacing="1"
       >
         yaAI
       </text>

@@ -21,6 +21,7 @@ interface SidebarProps {
   conversations: StoredConversation[]
   conversationsLoading?: boolean
   userEmail: string
+  userName?: string
   onLogout: () => void
   activeView: "chat" | "knowledge"
 }
@@ -109,6 +110,81 @@ function SkeletonRow() {
   )
 }
 
+function ProfileSection({ collapsed, userEmail, userName, onSettings, onLogout }: {
+  collapsed: boolean
+  userEmail: string
+  userName?: string
+  onSettings: () => void
+  onLogout: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
+
+  const initial = (userName?.charAt(0) || userEmail.charAt(0) || "U").toUpperCase()
+
+  return (
+    <div ref={ref} className="relative">
+      <div
+        onClick={() => { onSettings(); setOpen(false) }}
+        className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-2.5 px-3"} py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all cursor-pointer`}
+        title="Profile"
+      >
+        <div className="w-7 h-7 rounded-md bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center shrink-0">
+          <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">{initial}</span>
+        </div>
+        {!collapsed && (
+          <>
+            <span className="flex-1 text-left truncate text-sm">{userName || userEmail}</span>
+            <button
+              onClick={(e) => { e.stopPropagation(); setOpen(!open) }}
+              className="p-1 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="19" cy="12" r="1" />
+                <circle cx="5" cy="12" r="1" />
+              </svg>
+            </button>
+          </>
+        )}
+      </div>
+      {open && !collapsed && (
+        <div className="absolute bottom-full left-0 right-0 mb-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-lg overflow-hidden animate-fade-in">
+          <button
+            onClick={() => { onSettings(); setOpen(false) }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            Settings
+          </button>
+          <button
+            onClick={() => { onLogout(); setOpen(false) }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Log out
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Sidebar({
   collapsed,
   onToggleCollapse,
@@ -121,8 +197,9 @@ export default function Sidebar({
   conversations,
   conversationsLoading,
   userEmail,
+  userName,
   onLogout,
-  activeView
+  activeView,
 }: SidebarProps) {
   const [search, setSearch] = useState("")
 
@@ -231,29 +308,14 @@ export default function Sidebar({
           </svg>
           {!collapsed && <span className="flex-1 text-left">Buckets</span>}
         </button>
-        <button
-          onClick={onSettings}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-2.5 px-3"} py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all`}
-          title="Settings"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-          {!collapsed && <span className="flex-1 text-left">Settings</span>}
-        </button>
-        <button
-          onClick={onLogout}
-          className={`w-full flex items-center ${collapsed ? "justify-center px-0" : "gap-2.5 px-3"} py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all`}
-          title="Logout"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          {!collapsed && <span className="flex-1 text-left truncate">{userEmail}</span>}
-        </button>
+
+        <ProfileSection
+          collapsed={collapsed}
+          userEmail={userEmail}
+          userName={userName}
+          onSettings={onSettings}
+          onLogout={onLogout}
+        />
       </div>
     </div>
   )

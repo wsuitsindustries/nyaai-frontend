@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from "react"
-import { Link } from "react-router-dom"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import NLogo from "../components/ui/NLogo"
 import BrandLogo from "../components/ui/BrandLogo"
+import LanguageSelector from "../components/ui/LanguageSelector"
+import { useAuth } from "../context/AuthContext"
 
 function UploadIcon() {
   return (
@@ -74,8 +76,20 @@ function QuoteIcon() {
 }
 
 export default function Landing() {
+  const { user, userName, logout } = useAuth()
+  const navigate = useNavigate()
   const [showTyping, setShowTyping] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const profileRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false)
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
 
   useEffect(() => {
     let mounted = true
@@ -95,8 +109,8 @@ export default function Landing() {
   }, [])
 
   return (
-    <div className="h-full overflow-y-auto bg-white dark:bg-neutral-950">
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-10 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
+    <div className="h-full overflow-y-auto bg-white dark:bg-neutral-950 pb-16 sm:pb-0">
+          <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-10 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
         <Link to="/" className="flex items-center">
           <BrandLogo className="h-7 w-auto" />
         </Link>
@@ -104,10 +118,58 @@ export default function Landing() {
           <a href="#how-it-works" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">How it works</a>
           <a href="#features" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">Features</a>
           <Link to="/contact" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">Contact</Link>
+          <LanguageSelector />
         </nav>
         <div className="flex items-center gap-3">
-          <Link to="/login" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">Sign In</Link>
-          <Link to="/login" className="text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors px-4 py-2 rounded-lg">Get Started</Link>
+          {user ? (
+            <div ref={profileRef} className="relative">
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="w-8 h-8 rounded-md bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center hover:ring-2 hover:ring-purple-400 transition-all"
+              >
+                <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  {(userName?.charAt(0) || user.charAt(0) || "U").toUpperCase()}
+                </span>
+              </button>
+              {profileOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-48 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-lg overflow-hidden animate-fade-in z-50">
+                  <div className="px-3 py-2.5 border-b border-neutral-100 dark:border-neutral-800">
+                    <p className="text-xs font-medium text-neutral-900 dark:text-white truncate">{userName || user}</p>
+                    <p className="text-[10px] text-neutral-400 truncate">{user}</p>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="7" height="7" />
+                      <rect x="14" y="3" width="7" height="7" />
+                      <rect x="14" y="14" width="7" height="7" />
+                      <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => { logout(); navigate("/"); setProfileOpen(false) }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">Sign In</Link>
+              <Link to="/login" className="text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 transition-colors px-4 py-2 rounded-lg">Get started</Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -138,14 +200,35 @@ export default function Landing() {
 
           <div className="hidden lg:flex justify-center" style={{ perspective: '1200px' }}>
             <div className="relative" style={{ transform: 'rotateY(-14deg) rotateX(3deg)', transformStyle: 'preserve-3d' }}>
-              <div className="absolute -inset-1 rounded-[40px] bg-neutral-200 dark:bg-neutral-800" />
-              <div className="absolute inset-0 rounded-[36px] bg-neutral-300 dark:bg-neutral-700" />
-              <div className="relative rounded-[32px] overflow-hidden bg-white dark:bg-neutral-950 flex flex-col shadow-2xl" style={{ width: '250px', height: '500px', boxShadow: '-4px 8px 40px rgba(0,0,0,0.12), 8px 12px 60px rgba(0,0,0,0.08)' }}>
-                <div className="h-7 bg-neutral-100 dark:bg-neutral-900 flex items-center justify-between px-7 text-[10px] text-neutral-500 shrink-0">
-                  <span className="font-semibold">9:41</span>
-                  <div className="flex items-center gap-1">
-                    <svg width="14" height="10" viewBox="0 0 24 12" fill="currentColor"><rect x="1" y="1" width="20" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none" /><rect x="4" y="4" width="6" height="4" rx="0.5" fill="currentColor" /></svg>
-                    <svg width="14" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 15l4-4 4 4 4-4 4 4 4-4" /></svg>
+              {/* Phone body with glossy bevel */}
+              <div className="absolute -inset-[3px] rounded-[44px] bg-gradient-to-b from-neutral-300 to-neutral-400 dark:from-neutral-700 dark:to-neutral-800" />
+              <div className="absolute -inset-[1px] rounded-[42px] bg-gradient-to-b from-neutral-100 to-neutral-300 dark:from-neutral-600 dark:to-neutral-800" />
+              {/* Side buttons */}
+              <div className="absolute -right-[3px] top-24 w-[3px] h-8 rounded-r bg-neutral-400 dark:bg-neutral-600" />
+              <div className="absolute -right-[3px] top-36 w-[3px] h-12 rounded-r bg-neutral-400 dark:bg-neutral-600" />
+              <div className="absolute -right-[3px] top-52 w-[3px] h-12 rounded-r bg-neutral-400 dark:bg-neutral-600" />
+              <div className="absolute -left-[3px] top-36 w-[3px] h-10 rounded-l bg-neutral-400 dark:bg-neutral-600" />
+              {/* Screen */}
+              <div className="relative rounded-[36px] overflow-hidden bg-black flex flex-col shadow-2xl" style={{ width: '250px', height: '500px', boxShadow: '0 8px 40px rgba(0,0,0,0.18), 8px 16px 60px rgba(0,0,0,0.1), -2px 4px 20px rgba(0,0,0,0.06)' }}>
+                {/* Glass reflection overlay */}
+                <div className="absolute inset-0 rounded-[36px] pointer-events-none z-10" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.03) 100%)' }} />
+                {/* Dynamic Island */}
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+                  <div className="w-[90px] h-[26px] bg-black rounded-full flex items-center justify-center gap-2 px-3">
+                    <div className="w-2 h-2 rounded-full bg-neutral-800 border border-neutral-700" />
+                  </div>
+                </div>
+                <div className="h-10 bg-white dark:bg-neutral-950 flex items-center justify-between px-6 text-[10px] shrink-0 relative">
+                  <span className="font-semibold text-neutral-900 dark:text-white z-10">9:41</span>
+                  <div className="flex items-center gap-1.5 z-10">
+                    <svg width="14" height="10" viewBox="0 0 20 12" fill="none">
+                      <rect x="0.5" y="1.5" width="17" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" className="text-neutral-900 dark:text-white" fill="none" />
+                      <rect x="3" y="4" width="3" height="4" rx="0.5" className="fill-neutral-900 dark:fill-white" />
+                      <rect x="7" y="4" width="3" height="4" rx="0.5" className="fill-neutral-900 dark:fill-white" />
+                      <rect x="11" y="4" width="3" height="4" rx="0.5" className="fill-neutral-900 dark:fill-white" />
+                      <rect x="18" y="4" width="1.5" height="4" rx="0.75" className="fill-neutral-500" />
+                    </svg>
+                    <span className="text-[8px] font-medium text-neutral-900 dark:text-white">96%</span>
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-neutral-950">
@@ -208,7 +291,7 @@ export default function Landing() {
                       </div>
                       <div className="flex-1 text-xs text-neutral-400">Ask about your organization's knowledge...</div>
                       <div className="p-1 rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-400">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <line x1="12" y1="19" x2="12" y2="5" />
                           <polyline points="5 12 12 5 19 12" />
                         </svg>
@@ -217,6 +300,10 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="h-1 rounded-full bg-neutral-300 dark:bg-neutral-700 mx-auto mb-1.5" style={{ width: '120px' }} />
+                {/* Home indicator */}
+                <div className="pb-1 flex justify-center">
+                  <div className="w-[100px] h-[4px] rounded-full bg-neutral-300 dark:bg-neutral-600" />
+                </div>
               </div>
             </div>
           </div>
@@ -341,7 +428,7 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-3 uppercase tracking-wider">Testimonials</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-6">Trusted by teams that value their time</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-6">Built for real teams</h2>
               <p className="text-base text-neutral-500 dark:text-neutral-400 mb-8 leading-relaxed">
                 NyaAI helps organizations reduce the time spent searching for information across documents, wikis, and knowledge bases.
               </p>
@@ -360,26 +447,26 @@ export default function Landing() {
               <div className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
                 <div className="text-purple-500 mb-3"><QuoteIcon /></div>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-                  "We used to spend hours digging through Slack threads and Google Docs. Now we just ask NyaAI and get the answer in seconds."
+                  "We reduced our onboarding time by 60% using NyaAI. New hires can now find answers to company policies instantly without shadowing senior team members."
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">JD</div>
+                  <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">SK</div>
                   <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-white">Jane Doe</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Engineering Lead, TechCorp</p>
+                    <p className="text-sm font-medium text-neutral-900 dark:text-white">Sarah Kim</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">HR Director, CloudScale Inc.</p>
                   </div>
                 </div>
               </div>
               <div className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
                 <div className="text-purple-500 mb-3"><QuoteIcon /></div>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-                  "Onboarding new team members used to take weeks of shadowing. With NyaAI, they can find answers independently on day one."
+                  "What used to take hours of digging through shared drives and Slack history now takes seconds. The source citations give us confidence in every answer."
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">MS</div>
+                  <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">MR</div>
                   <div>
-                    <p className="text-sm font-medium text-neutral-900 dark:text-white">Mike Smith</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Operations Director, Startup Inc.</p>
+                    <p className="text-sm font-medium text-neutral-900 dark:text-white">Marcus Rivera</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Engineering Manager, DataSync</p>
                   </div>
                 </div>
               </div>
@@ -418,6 +505,32 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Mobile bottom nav */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 safe-bottom">
+        <a href="#how-it-works" className="flex flex-col items-center gap-0.5 px-3 py-1 text-neutral-400 dark:text-neutral-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span className="text-[9px] font-medium">How it works</span>
+        </a>
+        <a href="#features" className="flex flex-col items-center gap-0.5 px-3 py-1 text-neutral-400 dark:text-neutral-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <span className="text-[9px] font-medium">Features</span>
+        </a>
+        <Link to="/contact" className="flex flex-col items-center gap-0.5 px-3 py-1 text-neutral-400 dark:text-neutral-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+          <span className="text-[9px] font-medium">Contact</span>
+        </Link>
+        <div className="flex flex-col items-center gap-0.5 px-3 py-1">
+          <LanguageSelector />
+        </div>
+      </nav>
+
       <footer className="px-6 lg:px-10 py-8 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center">
@@ -425,6 +538,7 @@ export default function Landing() {
           </div>
           <p className="text-sm text-neutral-400 dark:text-neutral-500">&copy; {new Date().getFullYear()} NyaAI. All rights reserved.</p>
           <div className="flex items-center gap-6">
+            <LanguageSelector />
             <Link to="/privacy" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Privacy</Link>
             <Link to="/terms" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Terms</Link>
             <Link to="/contact" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Contact</Link>

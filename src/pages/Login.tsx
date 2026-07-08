@@ -125,7 +125,7 @@ export default function Login() {
         ? await login(email.trim(), password)
         : await register(name.trim(), email.trim(), password)
       setAuthToken(res.access_token)
-      authLogin(res.email)
+      authLogin(res.email, res.name)
       navigate("/dashboard", { replace: true })
     } catch (err: any) {
       setError(err.message || "Authentication failed")

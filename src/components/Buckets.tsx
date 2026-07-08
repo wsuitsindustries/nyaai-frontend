@@ -3,7 +3,7 @@ import type { Document, DocumentStatus } from "../types"
 import { listDocuments, deleteDocument, getDocumentStatus } from "../services/api"
 
 interface BucketsProps {
-  onUpload: (file: File) => void
+  onUpload: (file: File) => Promise<void>
 }
 
 function StatusPill({ status }: { status: DocumentStatus }) {
@@ -93,7 +93,7 @@ export default function Buckets({ onUpload }: BucketsProps) {
     } catch { /* noop */ }
   }
 
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
     for (const file of files) {
@@ -106,8 +106,11 @@ export default function Buckets({ onUpload }: BucketsProps) {
         chunks: 0,
       }
       setDocuments((prev) => [doc, ...prev])
-      onUpload(file)
+      try {
+        await onUpload(file)
+      } catch { /* ignore */ }
     }
+    await loadDocs()
     e.target.value = ""
   }
 

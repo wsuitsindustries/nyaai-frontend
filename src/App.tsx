@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { ThemeProvider } from "./context/ThemeContext"
 import { AuthProvider } from "./context/AuthContext"
 import { ToastProvider, ToastContainer } from "./context/ToastContext"
+import { LanguageProvider } from "./context/LanguageContext"
 import ErrorBoundary from "./components/ui/ErrorBoundary"
 import PageLoader from "./components/ui/PageLoader"
 import Dashboard from "./pages/Dashboard"
@@ -16,7 +17,8 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <ToastProvider>
+          <LanguageProvider>
+            <ToastProvider>
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<ErrorBoundary><Login /></ErrorBoundary>} />
@@ -28,8 +30,9 @@ export default function App() {
             </Routes>
             <ToastContainer />
           </ToastProvider>
-        </AuthProvider>
-      </ThemeProvider>
+        </LanguageProvider>
+      </AuthProvider>
+    </ThemeProvider>
     </BrowserRouter>
   )
 }

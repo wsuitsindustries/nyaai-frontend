@@ -139,3 +139,10 @@ export async function reindexDocument(id: string): Promise<DocumentStatusRespons
 export async function getDocumentStatus(id: string): Promise<DocumentStatusResponse> {
   return request<DocumentStatusResponse>(`/documents/${id}/status`)
 }
+
+export async function updateProfile(data: { name?: string; current_password?: string; new_password?: string }): Promise<{ access_token: string; email: string; name: string }> {
+  return request("/auth/profile", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  })
+}
