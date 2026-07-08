@@ -135,7 +135,7 @@ function UserMessage({ msg, onEdit, userEmail, showDate }: { msg: Message; onEdi
 
   return (
     <div className="flex justify-end px-4 message-enter">
-      <div className="max-w-lg w-fit">
+      <div className="max-w-lg w-fit group">
         {showDate && msg.timestamp && (
           <p className="text-[10px] text-neutral-400 text-right mb-1">{formatDateLabel(msg.timestamp)}</p>
         )}
@@ -160,6 +160,16 @@ function UserMessage({ msg, onEdit, userEmail, showDate }: { msg: Message; onEdi
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => onEdit(msg.id, msg.content)}
+            className="p-1.5 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all"
+            title="Resend"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="23 4 23 10 17 10" />
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
             </svg>
           </button>
         </div>
@@ -377,7 +387,7 @@ function ChatInput({ onSend, onAttach, onCancel, disabled, enterToSend, showSugg
           </div>
         )}
         <p className="text-center text-[10px] text-neutral-400 mt-2">
-          Nya AI can make mistakes.
+          NyaAI can make mistakes.
         </p>
       </div>
     </div>
@@ -437,7 +447,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
   })()
 
   function handleExport() {
-    const text = messages.map((m) => `[${m.role === "user" ? "You" : "Nya AI"}]\n${m.content}\n`).join("\n")
+    const text = messages.map((m) => `[${m.role === "user" ? "You" : "NyaAI"}]\n${m.content}\n`).join("\n")
     const blob = new Blob([text], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -507,6 +517,21 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                   </div>
                 </div>
               )}
+              {loading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
+                <div className="px-4 py-1 animate-fade-up">
+                  <div className="max-w-3xl">
+                    <div className="mb-1">
+                      <NLogo className="h-6 w-6" />
+                    </div>
+                    <div className="flex items-center gap-1.5 py-1">
+                      <span className="text-xs text-neutral-400">Thinking</span>
+                      <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                      <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                      <span className="w-1 h-1 rounded-full bg-purple-500 typing-dot" />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div ref={bottomRef} />
             </div>
           </div>
@@ -557,7 +582,7 @@ export default function Chat({ messages, loading, onSend, onEdit, onRegenerate, 
                 </button>
               </div>
               <p className="text-center text-[10px] text-neutral-400 mt-2">
-                Nya AI can make mistakes.
+                NyaAI can make mistakes.
               </p>
             </div>
           </div>

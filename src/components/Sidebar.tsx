@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react"
+import BrandLogo from "./ui/BrandLogo"
 import NLogo from "./ui/NLogo"
 
 interface StoredConversation {
@@ -148,12 +149,7 @@ export default function Sidebar({
       <div className="p-3 pb-2 space-y-1">
         <div className={`flex items-center ${collapsed ? "justify-center" : "justify-between"} mb-2`}>
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <NLogo className="h-7 w-7 shrink-0" />
-            {!collapsed && (
-              <span className="text-sm font-semibold text-neutral-900 dark:text-white truncate">
-                Nya <span className="gradient-text">AI</span>
-              </span>
-            )}
+            {collapsed ? <NLogo className="h-7 w-7 shrink-0" /> : <BrandLogo className="h-7 w-auto" />}
           </div>
         </div>
 

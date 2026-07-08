@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import NLogo from "../components/ui/NLogo"
+import BrandLogo from "../components/ui/BrandLogo"
 
 function UploadIcon() {
   return (
@@ -96,9 +97,8 @@ export default function Landing() {
   return (
     <div className="h-full overflow-y-auto bg-white dark:bg-neutral-950">
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-10 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-        <Link to="/" className="flex items-center gap-2.5">
-          <NLogo className="h-7 w-7" />
-          <span className="font-semibold text-neutral-900 dark:text-white text-base">Nya</span>
+        <Link to="/" className="flex items-center">
+          <BrandLogo className="h-7 w-auto" />
         </Link>
         <nav className="hidden sm:flex items-center gap-8">
           <a href="#how-it-works" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">How it works</a>
@@ -343,7 +343,7 @@ export default function Landing() {
               <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 mb-3 uppercase tracking-wider">Testimonials</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-6">Trusted by teams that value their time</h2>
               <p className="text-base text-neutral-500 dark:text-neutral-400 mb-8 leading-relaxed">
-                Nya helps organizations reduce the time spent searching for information across documents, wikis, and knowledge bases.
+                NyaAI helps organizations reduce the time spent searching for information across documents, wikis, and knowledge bases.
               </p>
               <Link
                 to="/login"
@@ -360,7 +360,7 @@ export default function Landing() {
               <div className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
                 <div className="text-purple-500 mb-3"><QuoteIcon /></div>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-                  "We used to spend hours digging through Slack threads and Google Docs. Now we just ask Nya and get the answer in seconds."
+                  "We used to spend hours digging through Slack threads and Google Docs. Now we just ask NyaAI and get the answer in seconds."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">JD</div>
@@ -373,7 +373,7 @@ export default function Landing() {
               <div className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
                 <div className="text-purple-500 mb-3"><QuoteIcon /></div>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-                  "Onboarding new team members used to take weeks of shadowing. With Nya, they can find answers independently on day one."
+                  "Onboarding new team members used to take weeks of shadowing. With NyaAI, they can find answers independently on day one."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-purple-200 dark:bg-purple-500/30 flex items-center justify-center text-xs font-semibold text-purple-700 dark:text-purple-300">MS</div>
@@ -420,11 +420,10 @@ export default function Landing() {
 
       <footer className="px-6 lg:px-10 py-8 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <NLogo className="h-5 w-5" />
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">Nya</span>
+          <div className="flex items-center">
+            <BrandLogo className="h-5 w-auto" />
           </div>
-          <p className="text-sm text-neutral-400 dark:text-neutral-500">&copy; {new Date().getFullYear()} Nya AI. All rights reserved.</p>
+          <p className="text-sm text-neutral-400 dark:text-neutral-500">&copy; {new Date().getFullYear()} NyaAI. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Privacy</Link>
             <Link to="/terms" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Terms</Link>

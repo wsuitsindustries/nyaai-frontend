@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom"
 import NLogo from "../components/ui/NLogo"
+import BrandLogo from "../components/ui/BrandLogo"
 
 export default function Contact() {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 flex flex-col">
       <header className="flex items-center justify-between px-8 py-4 border-b border-neutral-200 dark:border-neutral-800">
-        <Link to="/" className="flex items-center gap-2.5">
-          <NLogo className="h-7 w-7" />
-          <span className="font-semibold text-neutral-900 dark:text-white text-base">Nya</span>
+        <Link to="/" className="flex items-center">
+          <BrandLogo className="h-7 w-auto" />
         </Link>
         <Link to="/" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">Back to home</Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-8 py-16">
         <div className="max-w-lg mx-auto w-full">
           <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mb-2">Contact us</h1>
-          <p className="text-base text-neutral-500 dark:text-neutral-400 mb-12">Get in touch with the Nya team.</p>
+          <p className="text-base text-neutral-500 dark:text-neutral-400 mb-12">Get in touch with the NyaAI team.</p>
 
           <form className="space-y-6">
             <div>
@@ -53,11 +53,10 @@ export default function Contact() {
       </main>
       <footer className="px-8 py-6 border-t border-neutral-200 dark:border-neutral-800">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <NLogo className="h-5 w-5" />
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">Nya</span>
+          <div className="flex items-center">
+            <BrandLogo className="h-5 w-auto" />
           </div>
-          <p className="text-sm text-neutral-400 dark:text-neutral-500">&copy; {new Date().getFullYear()} Nya AI. All rights reserved.</p>
+          <p className="text-sm text-neutral-400 dark:text-neutral-500">&copy; {new Date().getFullYear()} NyaAI. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Privacy</Link>
             <Link to="/terms" className="text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">Terms</Link>

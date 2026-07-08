@@ -3,7 +3,7 @@ import { useId } from "react"
 export default function NLogo({ className = "h-7 w-7" }: { className?: string }) {
   const gradientId = useId()
   return (
-    <svg viewBox="0 0 80 80" className={className} aria-label="Nya AI">
+    <svg viewBox="0 0 80 80" className={className} aria-label="NyaAI">
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#a855f7" />

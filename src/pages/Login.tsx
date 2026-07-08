@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { login, register, setAuthToken } from "../services/api"
 import { useAuth } from "../context/AuthContext"
 import NLogo from "../components/ui/NLogo"
+import BrandLogo from "../components/ui/BrandLogo"
 
 type Mode = "signin" | "signup"
 
@@ -138,9 +139,7 @@ export default function Login() {
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 16 64 L 16 18 L 64 64 L 64 18' stroke='%23ffffff' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none' opacity='0.06' /%3E%3C/svg%3E")`, backgroundSize: '120px 120px' }} />
         <div className="relative z-10 text-center px-14">
           <div className="flex justify-center mb-6">
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
-              <NLogo className="h-12 w-12" />
-            </div>
+            <BrandLogo className="h-14 w-auto" />
           </div>
           <h2 className="text-3xl font-bold text-neutral-900 mb-3">AI knowledge base<br />for your team</h2>
           <p className="text-neutral-700 text-sm leading-relaxed max-w-sm mx-auto">
@@ -176,14 +175,14 @@ export default function Login() {
 
           <div className="flex items-center justify-center gap-3 mb-1">
             <Link to="/" className="block">
-              <NLogo className="h-7 w-7 shrink-0" />
+              <BrandLogo className="h-8 w-auto" />
             </Link>
             <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">
               {isSignIn ? "Welcome back" : "Create your account"}
             </h1>
           </div>
           <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center mb-8">
-            {isSignIn ? "Sign in to Nya AI" : "Get started with Nya AI"}
+            {isSignIn ? "Sign in to NyaAI" : "Get started with NyaAI"}
           </p>
 
           {error && (
