@@ -59,7 +59,6 @@ export async function streamChatMessage(
   conversationId: string,
   onToken: (token: string) => void,
   onDone: (sources: any[]) => void,
-  onError: (err: string) => void,
   signal?: AbortSignal,
 ): Promise<void> {
   const headers: Record<string, string> = { "Content-Type": "application/json" }
@@ -96,7 +95,12 @@ export async function streamChatMessage(
           if (parsed.done) {
             onDone(parsed.sources || [])
           }
-        } catch { /* skip malformed */ }
+          if (parsed.error) {
+            onToken(`[Error: ${parsed.error}]`)
+          }
+        } catch {
+          console.warn("SSE parse error:", data)
+        }
       }
     }
   }
